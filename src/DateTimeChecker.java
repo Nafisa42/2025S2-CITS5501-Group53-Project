@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -36,7 +37,15 @@ public class DateTimeChecker {
      * @return true if the datetime is valid, false otherwise.
      */
     public static boolean isValidDateTime(String dateTimeString) {
+        try {
+            // Format: YYYY-MM-DDTHH:MM (e.g., 2025-09-03T14:30)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeString, formatter);
+
+            return dateTime.isAfter(LocalDateTime.now());
+        } catch (DateTimeParseException e) {
             return false;
+        }
         
     }
 
