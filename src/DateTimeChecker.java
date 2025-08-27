@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 /**
  * Utilty class to check date and datetime strings
  * correctly formmatted for the Taohi Flight Booking System commands.
@@ -12,7 +16,14 @@ public class DateTimeChecker {
      * @return true if the date is valid, false otherwise.
      */
     public static boolean isValidDate(String dateString) {
-        return false;
+        try {
+            // Format: YYYY-MM-DD
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            LocalDate date = LocalDate.parse(dateString, formatter);
+            return date.isAfter(LocalDate.now());
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     /**
