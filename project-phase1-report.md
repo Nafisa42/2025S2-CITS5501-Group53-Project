@@ -20,7 +20,6 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 | **Date (YYYY-MM-DD)** | digits only (`0`–`9`, excluding hyphens) |
 | Semantics             | valid Gregorian date                     |
 |                       | must be ≥ today                          |
-|                       | must be ≤ 100 days ahead                 |
 | **Time (THH:MM)**     | digits only (`0`–`9`, excluding colons)  |
 | Semantics             | valid 24-hour clock                      |
 
@@ -30,31 +29,35 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ![Control Flow Diagram for isValidDate](docs/img/isValidDate.drawio.png)
 
-| Test Type         | Scenario                | Path              | Result |
-| ----------------- | ----------------------- | ----------------- | ------ |
-| Basic path        | Illegal date            | A → B → D         | false  |
-|                   | Valid date & in range   | A → B → C → E → F | true   |
-|                   | Valid date & not in rng | A → B → C → E → G | false  |
-| Boundary analysis | date = today            | A → B → C → E → F | true   |
-|                   | date = today+100        | A → B → C → E → F | true   |
-|                   | date = today+101        | A → B → C → E → G | false  |
-|                   | date < today            | A → B → C → E → G | false  |
+| Test Type         | Scenario                            | Path                                  | Result |
+| ----------------- | ----------------------------------- | ------------------------------------- | ------ |
+| Basic path        | Invalid format (wrong separators)   | A → B → D → E                         | false  |
+|                   | Non-digit in year/month/day         | A → B → D → F → G                     | false  |
+|                   | Month out of range (0 or 13)        | A → B → D → F → H → I                 | false  |
+|                   | Day overflow (e.g., 2025-04-31)     | A → B → D → F → H → J → L → M → N     | false  |
+|                   | Valid future date (non-Feb)         | A → B → D → F → H → J → L → M → O → P | true   |
+| Boundary analysis | Date = today (boundary on compare)  | A → B → D → F → H → J → L → M → O → P | true   |
+|                   | Date < today (just before boundary) | A → B → D → F → H → J → L → M → O → Q | false  |
+|                   | Leap day valid (2024-02-29)         | A → B → D → F → H → J → K → M → O → P | true   |
+|                   | Leap day invalid (2025-02-29)       | A → B → D → F → H → J → L → M → N     | false  |
 
 ---
 
 ### 3.2 isValidDateTime
 
-![Control Flow Diagram for isValidDateTime](docs/img/isValidTime.drawio.png)
+![Control Flow Diagram for isValidDateTime](docs/img/isValidDateTime.drawio.png)
 
-| Test Type         | Scenario                   | Path              | Result |
-| ----------------- | -------------------------- | ----------------- | ------ |
-| Basic path        | Invalid datetime format    | A → B → D         | false  |
-|                   | Valid datetime & after now | A → B → C → E → F | true   |
-|                   | Valid datetime ≤ now       | A → B → C → E → G | false  |
-| Boundary analysis | datetime = now             | A → B → C → E → G | false  |
-|                   | datetime = now + 1 min     | A → B → C → E → F | true   |
-|                   | datetime = now - 1 min     | A → B → C → E → G | false  |
-|                   | Invalid string             | A → B → D         | false  |
+| Test Type         | Scenario                                       | Path                              | Result |
+| ----------------- | ---------------------------------------------- | --------------------------------- | ------ |
+| Basic path        | Null or wrong length (not 19 chars)            | A → B → C                         | false  |
+|                   | Wrong separators (e.g., `2025/09/03T12:00:00`) | A → B → D → E                     | false  |
+|                   | Invalid date part (e.g., 2025-04-31)           | A → B → D → F → G                 | false  |
+|                   | Non-digit in time fields (e.g., `12:5a:00`)    | A → B → D → F → H → I             | false  |
+|                   | Time out of range (e.g., 24:00:00)             | A → B → D → F → H → J → K         | false  |
+|                   | Valid datetime and after now                   | A → B → D → F → H → J → L → M → N | true   |
+| Boundary analysis | Datetime exactly equal to now                  | A → B → D → F → H → J → L → M → N | true   |
+|                   | Datetime just before now (now − 1 second)      | A → B → D → F → H → J → L → M → O | false  |
+|                   | Lower bound valid (00:00:00)                   | A → B → D → F → H → J → L → M → N | true   |
 
 ---
 
@@ -145,6 +148,8 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 ### Test Quality
 
 - Use parameterized tests to reduce duplication.
+- Achieve 100% path coverage in unit and integration tests.
+- All tests executed automatically through CI pipeline.
 
 ### Process Quality
 
@@ -153,16 +158,3 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 ### Defect Tracking
 
 - Use GitHub Issues with ≥ 90% closure rate for critical defects.
-
----
-
-## 8. Risk Management
-
-### Risk
-
-If the system is deployed in different regions,  
-time zone differences may cause booking confusion.
-
-### Mitigation
-
-Consider unifying the time zone source.
