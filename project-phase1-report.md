@@ -29,17 +29,25 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ![Control Flow Diagram for isValidDate](docs/img/isValidDate.drawio.png)
 
-| Test Type         | Scenario                            | Path                                  | Result |
-| ----------------- | ----------------------------------- | ------------------------------------- | ------ |
-| Basic path        | Invalid format (wrong separators)   | A → B → D → E                         | false  |
-|                   | Non-digit in year/month/day         | A → B → D → F → G                     | false  |
-|                   | Month out of range (0 or 13)        | A → B → D → F → H → I                 | false  |
-|                   | Day overflow (e.g., 2025-04-31)     | A → B → D → F → H → J → L → M → N     | false  |
-|                   | Valid future date (non-Feb)         | A → B → D → F → H → J → L → M → O → P | true   |
-| Boundary analysis | Date = today (boundary on compare)  | A → B → D → F → H → J → L → M → O → P | true   |
-|                   | Date < today (just before boundary) | A → B → D → F → H → J → L → M → O → Q | false  |
-|                   | Leap day valid (2024-02-29)         | A → B → D → F → H → J → K → M → O → P | true   |
-|                   | Leap day invalid (2025-02-29)       | A → B → D → F → H → J → L → M → N     | false  |
+| Test Type  | Scenario                    | Path                | Result |
+| ---------- | --------------------------- | ------------------- | ------ |
+| Basic path | Invalid format              | A→B→D→E             | false  |
+|            | (wrong separators)          |                     |        |
+|            | Non-digit in year/month/day | A→B→D→F→G           | false  |
+|            | Month out of range          | A→B→D→F→H→I         | false  |
+|            | (0 or 13)                   |                     |        |
+|            | Day overflow                | A→B→D→F→H→J→L→M→N   | false  |
+|            | (e.g., 2025-04-31)          |                     |        |
+|            | Valid future date           | A→B→D→F→H→J→L→M→O→P | true   |
+|            | (non-Feb)                   |                     |        |
+| Boundary   | Date = today                | A→B→D→F→H→J→L→M→O→P | true   |
+|            | (boundary on compare)       |                     |        |
+|            | Date < today                | A→B→D→F→H→J→L→M→O→Q | false  |
+|            | (just before boundary)      |                     |        |
+|            | Leap day valid              | A→B→D→F→H→J→K→M→O→P | true   |
+|            | (2024-02-29)                |                     |        |
+|            | Leap day invalid            | A→B→D→F→H→J→L→M→N   | false  |
+|            | (2025-02-29)                |                     |        |
 
 ---
 
@@ -47,17 +55,24 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ![Control Flow Diagram for isValidDateTime](docs/img/isValidDateTime.drawio.png)
 
-| Test Type         | Scenario                                       | Path                              | Result |
-| ----------------- | ---------------------------------------------- | --------------------------------- | ------ |
-| Basic path        | Null or wrong length (not 19 chars)            | A → B → C                         | false  |
-|                   | Wrong separators (e.g., `2025/09/03T12:00:00`) | A → B → D → E                     | false  |
-|                   | Invalid date part (e.g., 2025-04-31)           | A → B → D → F → G                 | false  |
-|                   | Non-digit in time fields (e.g., `12:5a:00`)    | A → B → D → F → H → I             | false  |
-|                   | Time out of range (e.g., 24:00:00)             | A → B → D → F → H → J → K         | false  |
-|                   | Valid datetime and after now                   | A → B → D → F → H → J → L → M → N | true   |
-| Boundary analysis | Datetime exactly equal to now                  | A → B → D → F → H → J → L → M → N | true   |
-|                   | Datetime just before now (now − 1 second)      | A → B → D → F → H → J → L → M → O | false  |
-|                   | Lower bound valid (00:00:00)                   | A → B → D → F → H → J → L → M → N | true   |
+| Test Type  | Scenario                      | Path              | Result |
+| ---------- | ----------------------------- | ----------------- | ------ |
+| Basic path | Null or wrong length          | A→B→C             | false  |
+|            | (not 19 chars)                |                   |        |
+|            | Wrong separators              | A→B→D→E           | false  |
+|            | (e.g., `2025/09/03T12:00:00`) |                   |        |
+|            | Invalid date part             | A→B→D→F→G         | false  |
+|            | (e.g., 2025-04-31)            |                   |        |
+|            | Non-digit in time fields      | A→B→D→F→H→I       | false  |
+|            | (e.g., `12:5a:00`)            |                   |        |
+|            | Time out of range             | A→B→D→F→H→J→K     | false  |
+|            | (e.g., 24:00:00)              |                   |        |
+|            | Valid datetime and after now  | A→B→D→F→H→J→L→M→N | true   |
+| Boundary   | Datetime exactly equal to now | A→B→D→F→H→J→L→M→N | true   |
+|            | Datetime just before now      | A→B→D→F→H→J→L→M→O | false  |
+|            | (now − 1 second)              |                   |        |
+|            | Lower bound valid             | A→B→D→F→H→J→L→M→N | true   |
+|            | (00:00:00)                    |                   |        |
 
 ---
 
