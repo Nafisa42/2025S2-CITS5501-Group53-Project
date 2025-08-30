@@ -1,7 +1,5 @@
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 /**
@@ -18,26 +16,6 @@ public class DateTimeChecker {
 
     private DateTimeChecker() {
         /* utility class */
-    }
-
-    /**
-     * public static boolean hasValidDateSyntax(String dateString) {
-     * if (dateString == null) return false;
-     * // Only syntax check: digits + hyphens at the right spots
-     * // This allows strings like "0001-00-00" to pass SYNTAX (spec says it's syntactically valid).
-     * return dateString.matches("\\d{4}-\\d{2}-\\d{2}");
-     * }
-     * <p>
-     * <p>
-     * <p>
-     * /**
-     * Check dateString has correct syntax: YYYY-MM-DD
-     * Also check the date is later than today's date.
-     *
-     * @return true if the date is valid, false otherwise.
-     */
-    public static boolean isValidDate() {
-        return isValidDate(null);
     }
 
     /**
