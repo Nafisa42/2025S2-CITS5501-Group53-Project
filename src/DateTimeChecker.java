@@ -1,19 +1,8 @@
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-
 /**
- * Utility class to check date and datetime strings
- * for the Tachi Flight Booking System commands.
+ * Utilty class to check date and datetime strings
+ * correctly formmatted for the Taohi Flight Booking System commands.
  */
-public final class DateTimeChecker {
-
-    private DateTimeChecker() {
-        /* utility class - prevent instantiation */
-    }
+public class DateTimeChecker {
 
     /**
      * Check dateString has correct syntax: YYYY-MM-DD
@@ -23,149 +12,134 @@ public final class DateTimeChecker {
      * @return true if the date is valid, false otherwise.
      */
     // Days in months (non-leap year)
+    private static final int[] DAYS_IN_MONTH = {
+        31, 28, 31, 30, 31, 30,
+        31, 31, 30, 31, 30, 31
+    };
 
-    public static boolean hasValidDateSyntax(String dateString) {
-
-        if (dateString == null){
+    /**
+     * Check if a string is a valid date of the form YYYY-MM-DD and the date is not earlier than today's date.
+     * @param input date string in format YYYY-MM-DD
+     * @return ue if the date is syntactically and semantically valid and ≥ today
+     */
+    public static boolean isValidDate(String input) {
+        if (input == null || input.length() != 10){
             return false;
         }
-        return dateString.matches("\\d{4}-\\d{2}-\\d{2}");
+        if (input.charAt(4) != '-' || input.charAt(7) != '-'){
+            return false;
+        }
+
+        String yearStr = input.substring(0, 4);
+        String monthStr = input.substring(5, 7);
+        String dayStr = input.substring(8, 10);
+
+        if (!isAllDigits(yearStr) || !isAllDigits(monthStr) || !isAllDigits(dayStr)){
+            return false;
+        }
+
+        int year = Integer.parseInt(yearStr);
+        int month = Integer.parseInt(monthStr);
+        int day = Integer.parseInt(dayStr);
+
+        if (month < 1 || month > 12){
+            return false;
+        }
+        int maxDay = DAYS_IN_MONTH[month - 1];
+
+        // Leap year check
+        if (month == 2 && isLeapYear(year)){
+            maxDay = 29;
+        }
+        if (day < 1 || day > maxDay){
+            return false;
+        }
+
+        // Compare with today's date
+        int[] now = getCurrentDateParts(); // {year, month, day}
+        int cmp = compareDateParts(year, month, day, now[0], now[1], now[2]);
+        return cmp >= 0;
     }
 
     /**
-     * Semantic check for date: Gregorian-valid AND >= today.
-     * @param dateString
-     * @param today
-     * @return returns false on parse error or date<today
-     */
-    public static boolean isGregorianValidDate(String dateString, LocalDate today) {
-
-        if (!hasValidDateSyntax(dateString)){
-            return false;
-        }
-        try {
-            LocalDate d = LocalDate.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE);
-            return !d.isBefore(today);
-        } catch (DateTimeParseException e) {
-            return false;
-            }
-        }
-
-
-    /**
-     * Overload: use system "today" (system default zone) for semantic date check.
-     */
-     public static boolean isGregorianValidDate(String dateString) {
-
-         return isGregorianValidDate(dateString, LocalDate.now(ZoneId.systemDefault()));
-     }
-
-
-    /** Check datetimeString has correct syntax: YYYY-MM-DDTHH:MM:SS
+     * Check datetimeString has correct syntax: YYYY-MM-DDTHH:MM
      * Also check the date part of date time is later than today's date.
      * Datetiems are used for airline flight times.
      * They are in UTC, use 24 hour clock and do not include seconds.
-     *
-     * @param dateTimeString
+     * 
+     * @param input
      * @return true if the datetime is valid, false otherwise.
      */
-
-    public static boolean isValidDateTime(String dateTimeString) {
-
-        if (dateTimeString == null){
+    public static boolean isValidDateTime(String input) {
+        if (input == null){
             return false;
         }
-        if (dateTimeString.length() == 10 && hasValidDateSyntax(dateTimeString)) {
-            return isGregorianValidDate(dateTimeString);
+        if (input.length() == 10) {
+            return isValidDate(input);
         }
 
-        if (dateTimeString.length() == 16
-                && dateTimeString.charAt(4) == '-'
-                && dateTimeString.charAt(7) == '-'
-                && dateTimeString.charAt(10) == 'T'
-                && dateTimeString.charAt(13) == ':') {
+        if (input.length() == 16
+                && input.charAt(4) == '-'
+                && input.charAt(7) == '-'
+                && input.charAt(10) == 'T'
+                && input.charAt(13) == ':') {
 
-            String datePart = dateTimeString.substring(0, 10);
-            String hourStr = dateTimeString.substring(11, 13);
-            String minStr  = dateTimeString.substring(14, 16);
+            String datePart = input.substring(0, 10);
+            String hourStr = input.substring(11, 13);
+            String minuteStr  = input.substring(14, 16);
             // Verify date syntax and semantics (≥ today)
-            if (!isGregorianValidDate(datePart)){
+            if (!isValidDate(datePart)){
                 return false;
             }
-            // Verification time range
-            if (!hourStr.chars().allMatch(Character::isDigit)){
+            if (!isAllDigits(hourStr) || !isAllDigits(minuteStr)){
                 return false;
             }
-            if (!minStr.chars().allMatch(Character::isDigit)){
-                return false;
-            }
-            int h = Integer.parseInt(hourStr);
-            int m = Integer.parseInt(minStr);
-            return (0 <= h && h <= 23) && (0 <= m && m <= 59);
+            int hour = Integer.parseInt(hourStr);
+            int minute = Integer.parseInt(minuteStr);
+            return (hour >= 0 && hour <= 23) && (minute >= 0 && minute <= 59);
         }
 
-        if (dateTimeString.length() == 19
-                && dateTimeString.charAt(4) == '-'
-                && dateTimeString.charAt(7) == '-'
-                && dateTimeString.charAt(10) == 'T'
-                && dateTimeString.charAt(13) == ':'
-                && dateTimeString.charAt(16) == ':') {
-
-            String datePart = dateTimeString.substring(0, 10);
-            if (!isGregorianValidDate(datePart)){
-                return false; // If date ≥ today
-            }
-            try {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                LocalDateTime.parse(dateTimeString, formatter); // If the analysis is passed, the time is considered valid
-                return true;
-            } catch (DateTimeParseException ex) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Brief: Check if datetime >= now.
-     * @param : dateTimeString ("YYYY-MM-DDTHH:MM:SS"), zoneId
-     * @return: true/false
-     */
-    public static boolean isFutureDateTime(String dateTimeString, ZoneId zoneId) {
-        if (!isValidDateTime(dateTimeString)){
+        if (input.length() != 19){
             return false;
         }
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime dt = LocalDateTime.parse(dateTimeString, formatter);
-        return !dt.isBefore(LocalDateTime.now(Clock.system(zoneId)));
+        if (input.charAt(4) != '-' || input.charAt(7) != '-' || input.charAt(10) != 'T'
+            || input.charAt(13) != ':' || input.charAt(16) != ':') {
+            return false;
+        }
+
+        String datePart = input.substring(0, 10);
+        String hourStr = input.substring(11, 13);
+        String minuteStr = input.substring(14, 16);
+        String secondStr = input.substring(17, 19);
+
+        if (!isValidDate(datePart)){
+            return false;
+        }
+        if (!isAllDigits(hourStr) || !isAllDigits(minuteStr) || !isAllDigits(secondStr)){
+            return false;
+        }
+
+        int hour = Integer.parseInt(hourStr);
+        int minute = Integer.parseInt(minuteStr);
+        int second = Integer.parseInt(secondStr);
+
+        if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
+            return false;
+        }
+
+        long inputEpoch = toEpochSeconds(input);
+        long nowEpoch = System.currentTimeMillis() / 1000;
+
+        return inputEpoch >= nowEpoch;
     }
+
 
     /**
-     * Brief: Overload using isFutureDateTime function.
-     * @param : dateTimeString
-     * @return: true/false
+     * Utility: check if all characters in string are digits.
+     *
+     * @param s input string
+     * @return true if all characters are digits
      */
-    public static boolean isFutureDateTime(String dateTimeString) {
-
-        return isFutureDateTime(dateTimeString, ZoneId.systemDefault());
-    }
-
-    private static int[] getCurrentDateParts() {
-        LocalDate today = LocalDate.now(ZoneId.systemDefault());
-        return new int[] { today.getYear(), today.getMonthValue(), today.getDayOfMonth() };
-    }
-
-    private static long toEpochSeconds(String input) {
-
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDateTime dt = LocalDateTime.parse(input, fmt);
-        return dt.atZone(ZoneId.systemDefault()).toEpochSecond();
-
-    }
-}
-
-/**
-    // Utility to check if a string contains only digits
     private static boolean isAllDigits(String s) {
         for (char c : s.toCharArray()) {
             if (!Character.isDigit(c)) return false;
@@ -173,12 +147,25 @@ public final class DateTimeChecker {
         return true;
     }
 
-    // Check leap year
+
+    /**
+     * Utility: check if a given year is a leap year.
+     *
+     * @param year input year
+     * @return true if leap year, false otherwise
+     */
     private static boolean isLeapYear(int year) {
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
-    // Get current date parts: year, month, day
+    /**
+     * Utility: compute the current system date parts (year, month, day).
+     * Uses System.currentTimeMillis() and manual conversion.
+     *
+     * Output format: {year, month, day}
+     *
+     * @return int array of size 3 with year, month, day
+     */
     private static int[] getCurrentDateParts() {
         long millis = System.currentTimeMillis();
         long daysSinceEpoch = millis / (1000 * 60 * 60 * 24);
@@ -187,17 +174,23 @@ public final class DateTimeChecker {
 
         while (true) {
             int daysInYear = isLeapYear(year) ? 366 : 365;
-            if (daysSinceEpoch < daysInYear) break;
+            if (daysSinceEpoch < daysInYear){
+                break;
+            }
             daysSinceEpoch -= daysInYear;
             year++;
         }
 
         int[] dim = DAYS_IN_MONTH.clone();
-        if (isLeapYear(year)) dim[1] = 29;
+        if (isLeapYear(year)){
+            dim[1] = 29;
+        }
 
         while (month <= 12) {
             int daysInMonth = dim[month - 1];
-            if (daysSinceEpoch < daysInMonth) break;
+            if (daysSinceEpoch < daysInMonth){
+                break;
+            }
             daysSinceEpoch -= daysInMonth;
             month++;
         }
@@ -206,14 +199,31 @@ public final class DateTimeChecker {
         return new int[] {year, month, day};
     }
 
-    // Compare two dates: returns <0, 0, or >0
+    /**
+     * Utility: compare two dates y1-m1-d1 and y2-m2-d2.
+     *
+     * @return negative if first < second, 0 if equal, positive if first > second
+     */
     private static int compareDateParts(int y1, int m1, int d1, int y2, int m2, int d2) {
-        if (y1 != y2) return y1 - y2;
-        if (m1 != m2) return m1 - m2;
+        if (y1 != y2){
+            return y1 - y2;
+        }
+        if (m1 != m2){
+            return m1 - m2;
+        }
         return d1 - d2;
     }
 
-    // Parse datetime to seconds since epoch (simplified)
+    /**
+     * Utility: parse a datetime string "YYYY-MM-DDTHH:MM:SS" to seconds since epoch (1970-01-01).
+     *
+     * Input: string input in correct format
+     * Assumptions: input already validated by isValidDateTime
+     * Output: epoch seconds
+     *
+     * @param input datetime string
+     * @return epoch seconds (long)
+     */
     private static long toEpochSeconds(String input) {
         String[] dateTimeParts = input.split("T");
         String[] ymd = dateTimeParts[0].split("-");
@@ -232,7 +242,9 @@ public final class DateTimeChecker {
         }
 
         int[] dim = DAYS_IN_MONTH.clone();
-        if (isLeapYear(year)) dim[1] = 29;
+        if (isLeapYear(year)){
+            dim[1] = 29;
+        }
 
         for (int m = 1; m < month; m++) {
             totalDays += dim[m - 1];
@@ -243,4 +255,3 @@ public final class DateTimeChecker {
         return totalDays * 86400 + hour * 3600 + min * 60 + sec;
     }
 }
- */
