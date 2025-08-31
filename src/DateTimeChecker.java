@@ -23,6 +23,7 @@ public final class DateTimeChecker {
      * @return true if the date is valid, false otherwise.
      */
     // Days in months (non-leap year)
+
     public static boolean hasValidDateSyntax(String dateString) {
 
         if (dateString == null){
@@ -50,6 +51,7 @@ public final class DateTimeChecker {
             }
         }
 
+
     /**
      * Overload: use system "today" (system default zone) for semantic date check.
      */
@@ -67,6 +69,7 @@ public final class DateTimeChecker {
      * @param dateTimeString
      * @return true if the datetime is valid, false otherwise.
      */
+
     public static boolean isValidDateTime(String dateTimeString) {
 
         if (dateTimeString == null){
@@ -157,6 +160,7 @@ public final class DateTimeChecker {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime dt = LocalDateTime.parse(input, fmt);
         return dt.atZone(ZoneId.systemDefault()).toEpochSecond();
+
     }
 }
 
