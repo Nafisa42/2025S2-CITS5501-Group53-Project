@@ -31,7 +31,9 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 | Test Type  | Scenario                    | Path                | Result |
 | ---------- | --------------------------- | ------------------- | ------ |
-| Basic path | Invalid format              | A→B→D→E             | false  |
+| Basic path | Null or wrong length        | A→B→C               | false  |
+|            | (not 10 chars)              |                     |        |
+|            | Invalid format              | A→B→D→E             | false  |
 |            | (wrong separators)          |                     |        |
 |            | Non-digit in year/month/day | A→B→D→F→G           | false  |
 |            | Month out of range          | A→B→D→F→H→I         | false  |
@@ -76,14 +78,28 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ---
 
-## 4. Workout
+## 4. Key File
 
-- GitHub repository
-- `README.md`
-- `CheckDateTimeStringTest.java`
-- JUnit test cases
-- Pull Requests
-- Report
+- **Repository**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53>)
+
+- **README**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/blob/main/README.md>)
+
+- **Report file**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/blob/master/project-phase1-report.md>)
+
+- **DateTimeChecker.java**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/blob/master/src/DateTimeChecker.java>)
+
+- **DateTimeCheckerTest.java**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/blob/master/src/DateTimeCheckerTest.java>)
+
+- **Pull Requests**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/pulls>)
+
+- **Figures**:  
+  (<https://github.com/Nafisa42/cits5501-2025-Group53/tree/master/docs/img>)
 
 ---
 
@@ -97,8 +113,6 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ---
 
-## 6. SQA Actions, Methods and Findings
-
 ### Developer — Nafisa Tabassum
 
 #### Nafisa: Actions and Tasks
@@ -110,6 +124,7 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 - Implement syntax and semantic verification
 - Prohibit System.out/err, use logs instead
 - Write Javadoc for public methods
+- Ensure code passes CI checks
 
 ---
 
@@ -124,6 +139,7 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 - Use JUnit 5
 - Apply equivalence partitioning and boundary value analysis
 - Use parameterized testing to reduce duplication
+- Verify tests run automatically in CI workflow
 
 ---
 
@@ -138,6 +154,7 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 - Require PRs from feature branches
 - Adopt Conventional Commits
 - Resolve all review conversations before merging
+- Approve only if PR passes CI workflow
 
 ---
 
@@ -164,12 +181,28 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 - Use parameterized tests to reduce duplication.
 - Achieve 100% path coverage in unit and integration tests.
-- All tests executed automatically through CI pipeline.
+- All tests executed automatically through CI workflow.
 
 ### Process Quality
 
 - Each PR reviewed by ≥ 2 reviewers.
+- PRs merged only after passing **CI checks**.
 
 ### Defect Tracking
 
 - Use GitHub Issues with ≥ 90% closure rate for critical defects.
+
+---
+
+## 8. Decision: Not Using Fuzz/Random Testing
+
+We decided **not to use fuzz/random testing** in this project.  
+Reasons include:
+
+- **Strict input constraints**: fixed syntax, enumerable boundaries.
+- **Risk coverage**: boundary value tests cover most cases.
+- **Cost–benefit**: fuzzing adds little value here.
+- **Quality assurance**: ensured by **JUnit tests**,  
+  **boundary analysis**, and **peer review**.
+
+This aligns with the **Phase 1 project goals**.
