@@ -12,7 +12,7 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
   - Must represent a valid Gregorian date  
   - Must be today or a future date
 
-**Datetime** validation (`isValidDateTime`)  
+- **Datetime** validation (`isValidDateTime`)  
   - Formats:  
     - `YYYY-MM-DD` (date only)  
     - `YYYY-MM-DDTHH:MM` (no seconds)  
