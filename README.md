@@ -31,7 +31,7 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
 └── project-phase1-report.md        # Stage 1 report (Markdown format)
 ```
 
-## Function Description
+## Mainly Function Description
 
 - **Date** validation (`isValidDate`)  
   - Format: `YYYY-MM-DD`  
