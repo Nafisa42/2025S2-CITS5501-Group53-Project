@@ -2,6 +2,11 @@
 
 # CITS5501 Project 2025 - Phase 1
 
+## Group member
+
+- Contact
+  -Erqian Chen 23421379@student.uwa.edu.au
+
 ## Project Description
 
 This project is a beginner's version of the **DateTimeChecker** program.
