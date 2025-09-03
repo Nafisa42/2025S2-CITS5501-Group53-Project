@@ -98,28 +98,28 @@ java -jar lib/junit-platform-console-standalone-1.10.0.jar \
 
 If you have questions or need help, please:
 
-- Open an **Issue** in this repository, or
+- Open an **Issue** in this repository
 - see **Group member** section for emails
 
 ---
 
 ## Group member
 
-- **Nafisa Tabassum (24627403)** – Developer
+- **Nafisa Tabassum (24627403@uwa.edu.au)** – Developer
 
   - Implemented features and core functions
 
-- **Erqian Chen (23421379)** – Developer
+- **Erqian Chen (23421379@uwa.edu.au)** – Developer
 
   - Wrote JUnit test cases and ensured test coverage
 
-- **Keming Cao (24458695)** – Reviewer
+- **Keming Cao (24458695@uwa.edu.au)** – Reviewer
 
   - Reviewed code contributions and provided feedback
 
-- **Ahmed Shadab (23912137)** – Reviewer
+- **Ahmed Shadab (23912137@uwa.edu.au)** – Reviewer
 
   - Reviewed code contributions and ensured code quality
 
-- **Yanxi Liu (24305445)** – Reporter
+- **Yanxi Liu (24305445@uwa.edu.au)** – Reporter
   - Prepared project documentation and reports
