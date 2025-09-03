@@ -54,7 +54,7 @@ Implemented with **JUnit 5** in `src/DateTimeCheckerTest.java`
   - Valid and invalid syntax
   - Semantic checks (today / future / past)
   - Boundary cases (e.g., leap years, `00:00:00`, `23:59:59`)
-- Tests run automatically via **GitHub Actions** and teacher-provided **starter_tests**
+- Tests run automatically via **GitHub Actions** and provided **starter_tests**
 
 ## Control Flow Diagrams
 
