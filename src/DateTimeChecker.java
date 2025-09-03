@@ -13,6 +13,7 @@ public class DateTimeChecker {
      */
     // Days in months (non-leap year)
     private static final int[] DAYS_IN_MONTH = {
+
         31, 28, 31, 30, 31, 30,
         31, 31, 30, 31, 30, 31
     };
@@ -23,6 +24,7 @@ public class DateTimeChecker {
      * @return ue if the date is syntactically and semantically valid and ≥ today
      */
     public static boolean isValidDate(String input) {
+
         if (input == null || input.length() != 10){
             return false;
         }
@@ -71,76 +73,50 @@ public class DateTimeChecker {
      * @return true if the datetime is valid, false otherwise.
      */
     public static boolean isValidDateTime(String input) {
+
         if (input == null){
             return false;
         }
-        if (input.length() == 10) {
+
+        if (input.length() == 10
+                && input.charAt(4) == '-'
+                && input.charAt(7) == '-') {
             return isValidDate(input);
         }
 
-        if (input.length() == 16
-                && input.charAt(4) == '-'
-                && input.charAt(7) == '-'
-                && input.charAt(10) == 'T'
-                && input.charAt(13) == ':') {
-
-            String datePart = input.substring(0, 10);
-            String hourStr = input.substring(11, 13);
-            String minuteStr  = input.substring(14, 16);
-            // Verify date syntax and semantics (≥ today)
-            if (!isValidDate(datePart)){
-                return false;
-            }
-            if (!isAllDigits(hourStr) || !isAllDigits(minuteStr)){
-                return false;
-            }
-            int hour = Integer.parseInt(hourStr);
-            int minute = Integer.parseInt(minuteStr);
-            return (hour >= 0 && hour <= 23) && (minute >= 0 && minute <= 59);
-        }
-
-        if (input.length() != 19){
-            return false;
-        }
-        if (input.charAt(4) != '-' || input.charAt(7) != '-' || input.charAt(10) != 'T'
-            || input.charAt(13) != ':' || input.charAt(16) != ':') {
+        if (input.length() != 16
+                || input.charAt(4) != '-'
+                || input.charAt(7) != '-'
+                || input.charAt(10) != 'T'
+                || input.charAt(13) != ':') {
             return false;
         }
 
         String datePart = input.substring(0, 10);
         String hourStr = input.substring(11, 13);
         String minuteStr = input.substring(14, 16);
-        String secondStr = input.substring(17, 19);
 
         if (!isValidDate(datePart)){
             return false;
         }
-        if (!isAllDigits(hourStr) || !isAllDigits(minuteStr) || !isAllDigits(secondStr)){
+
+        if (!isAllDigits(hourStr) || !isAllDigits(minuteStr)){
             return false;
         }
 
         int hour = Integer.parseInt(hourStr);
         int minute = Integer.parseInt(minuteStr);
-        int second = Integer.parseInt(secondStr);
-
-        if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
-            return false;
-        }
-
-        long inputEpoch = toEpochSeconds(input);
-        long nowEpoch = System.currentTimeMillis() / 1000;
-
-        return inputEpoch >= nowEpoch;
+        return (hour >= 0 && hour <= 23) && (minute >= 0 && minute <= 59);
     }
 
-
-    /**
-     * Utility: check if all characters in string are digits.
-     *
-     * @param s input string
-     * @return true if all characters are digits
-     */
+        /**
+         * Utility: check if all characters in string are digits.
+         *
+         * @param s input string
+         * @return true if all characters are digits
+         */
     private static boolean isAllDigits(String s) {
+
         for (char c : s.toCharArray()) {
             if (!Character.isDigit(c)) return false;
         }
@@ -155,6 +131,7 @@ public class DateTimeChecker {
      * @return true if leap year, false otherwise
      */
     private static boolean isLeapYear(int year) {
+
         return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
     }
 
@@ -167,8 +144,10 @@ public class DateTimeChecker {
      * @return int array of size 3 with year, month, day
      */
     private static int[] getCurrentDateParts() {
+
         long millis = System.currentTimeMillis();
-        long daysSinceEpoch = millis / (1000 * 60 * 60 * 24);
+        long millisWithOffset = millis + 8L * 60 * 60 * 1000;
+        long daysSinceEpoch = millisWithOffset / (1000 * 60 * 60 * 24);
         int year = 1970;
         int month = 1;
 
@@ -205,6 +184,7 @@ public class DateTimeChecker {
      * @return negative if first < second, 0 if equal, positive if first > second
      */
     private static int compareDateParts(int y1, int m1, int d1, int y2, int m2, int d2) {
+
         if (y1 != y2){
             return y1 - y2;
         }
@@ -225,6 +205,7 @@ public class DateTimeChecker {
      * @return epoch seconds (long)
      */
     private static long toEpochSeconds(String input) {
+
         String[] dateTimeParts = input.split("T");
         String[] ymd = dateTimeParts[0].split("-");
         String[] hms = dateTimeParts[1].split(":");
