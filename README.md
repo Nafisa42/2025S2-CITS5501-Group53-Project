@@ -9,6 +9,7 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
 
 ## Project Directory
 
+```
 2025S2-CITS5501-Group53-Project/
 ├── .github/workflows/              # GitHub Actions
 │   └── starter-checks.yml
@@ -23,7 +24,7 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
 ├── .gitignore                      # Git ignore rules
 ├── README.md                       # Project description
 └── project-phase1-report.md        # Stage 1 report (Markdown format)
-
+```
 
 ## Function Description
 
