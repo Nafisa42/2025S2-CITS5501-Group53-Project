@@ -34,7 +34,8 @@ Implemented with **JUnit 5** in `src/DateTimeCheckerTest.java`
 
 `isValidDate`  
   ![Control Flow Diagram for isValidDate](docs/img/isValidDate.drawio.png)
-- `isValidDateTime`  
+  
+`isValidDateTime`  
   ![Control Flow Diagram for isValidDateTime](docs/img/isValidDateTime.drawio.png)
 
 ## How to Run
