@@ -63,7 +63,7 @@ Implemented with **JUnit 5** in `src/DateTimeCheckerTest.java`
 
 ---
 
-## git checkout -b docs/readme-updateRunning the Tests
+## Running the Tests
 
 ### Run Java Tests locally
 
