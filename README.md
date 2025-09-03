@@ -49,12 +49,12 @@ mvn test
 ./gradlew test
 
 # Basic
-- Windows Powershell:
+## Windows Powershell:
 cd 'Folder path'
 javac -cp ".;lib\junit-platform-console-standalone-1.10.0.jar" src\DateTimeChecker.java src\DateTimeCheckerTest.java
 java -jar lib\junit-platform-console-standalone-1.10.0.jar -cp src --scan-class-path
 
-- Mac / Linux / WSL (Ubuntu) Terminal:
+## Mac / Linux / WSL (Ubuntu) Terminal:
 javac -cp .:lib/junit-platform-console-standalone-1.10.0.jar src/DateTimeChecker.java src/DateTimeCheckerTest.java
 java -jar lib/junit-platform-console-standalone-1.10.0.jar -cp src --scan-class-path
 
