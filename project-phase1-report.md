@@ -74,7 +74,8 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 |            | Lower bound valid             | A→B→D→F→H→J→L→M→N | true   |
 |            | (00:00:00)                    |                   |        |
 
-Our implementation only accepts datetime in the format `YYYY-MM-DDTHH:MM` (without seconds).
+Our implementation only accepts datetime in the format 
+`YYYY-MM-DDTHH:MM` (without seconds).
 
 ---
 
