@@ -43,7 +43,8 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
     - `YYYY-MM-DD` (date only)  
     - `YYYY-MM-DDTHH:MM` (no seconds)   
   - Date must be ≥ today  
-  - Time fields must be within valid ranges   
+  - Time fields must be within valid ranges
+  - **Note:** Seconds are not supported. Any format including seconds (e.g. `YYYY-MM-DDTHH:MM:SS`) will be rejected.   
 
 ## Testing
 
