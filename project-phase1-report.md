@@ -72,7 +72,7 @@ We choose to record time up to **minutes (THH:MM)** because:
 | Test Type  | Scenario                   | Path              | Result |
 | ---------- | -------------------------- | ----------------- | ------ |
 | Basic path | Null or wrong length       | A→B→C             | false  |
-|            | (not 19 chars)             |                   |        |
+|            | (not 16 chars)             |                   |        |
 |            | Wrong separators           | A→B→D→E           | false  |
 |            | (e.g., `2025/09/03T12:00`) |                   |        |
 |            | Invalid date part          | A→B→D→F→G         | false  |
