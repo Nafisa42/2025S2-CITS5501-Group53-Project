@@ -41,11 +41,9 @@ The goal is to ensure the **syntactical** and **semantic** validation of dates a
 - **Datetime** validation (`isValidDateTime`)  
   - Formats:  
     - `YYYY-MM-DD` (date only)  
-    - `YYYY-MM-DDTHH:MM` (no seconds)  
-    - `YYYY-MM-DDTHH:MM:SS` (full time)  
+    - `YYYY-MM-DDTHH:MM` (no seconds)   
   - Date must be ≥ today  
-  - Time fields must be within valid ranges  
-  - For full datetimes, must not be before the current system time  
+  - Time fields must be within valid ranges   
 
 ## Testing
 
