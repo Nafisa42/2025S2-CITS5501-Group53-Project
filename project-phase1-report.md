@@ -23,6 +23,18 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 | **Time (THH:MM)**     | digits only (`0`–`9`, excluding colons)  |
 | Semantics             | valid 24-hour clock                      |
 
+We choose to record time up to **minutes (THH:MM)** because:
+
+- **Business need**:
+
+  Airline timetables and tickets are always published in minutes.
+
+- **Practicality**:
+
+  Seconds add no real value to passengers or staff but increase complexity.
+
+---
+
 ## 3. Control Flow and Test Paths
 
 ### 3.1 isValidDate
@@ -55,24 +67,24 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ![Control Flow Diagram for isValidDateTime](docs/img/isValidDateTime.drawio.png)
 
-| Test Type  | Scenario                      | Path              | Result |
-| ---------- | ----------------------------- | ----------------- | ------ |
-| Basic path | Null or wrong length          | A→B→C             | false  |
-|            | (not 19 chars)                |                   |        |
-|            | Wrong separators              | A→B→D→E           | false  |
-|            | (e.g., `2025/09/03T12:00:00`) |                   |        |
-|            | Invalid date part             | A→B→D→F→G         | false  |
-|            | (e.g., 2025-04-31)            |                   |        |
-|            | Non-digit in time fields      | A→B→D→F→H→I       | false  |
-|            | (e.g., `12:5a:00`)            |                   |        |
-|            | Time out of range             | A→B→D→F→H→J→K     | false  |
-|            | (e.g., 24:00:00)              |                   |        |
-|            | Valid datetime and after now  | A→B→D→F→H→J→L→M→N | true   |
-| Boundary   | Datetime exactly equal to now | A→B→D→F→H→J→L→M→N | true   |
-|            | Datetime just before now      | A→B→D→F→H→J→L→M→O | false  |
-|            | (now − 1 second)              |                   |        |
-|            | Lower bound valid             | A→B→D→F→H→J→L→M→N | true   |
-|            | (00:00:00)                    |                   |        |
+| Test Type  | Scenario                   | Path              | Result |
+| ---------- | -------------------------- | ----------------- | ------ |
+| Basic path | Null or wrong length       | A→B→C             | false  |
+|            | (not 19 chars)             |                   |        |
+|            | Wrong separators           | A→B→D→E           | false  |
+|            | (e.g., `2025/09/03T12:00`) |                   |        |
+|            | Invalid date part          | A→B→D→F→G         | false  |
+|            | (e.g., `2025-04-31`)       |                   |        |
+|            | Non-digit in time fields   | A→B→D→F→H→I       | false  |
+|            | (e.g., `12:a0`)            |                   |        |
+|            | Time out of range          | A→B→D→F→H→J→K     | false  |
+|            | (e.g., `24:00`)            |                   |        |
+| Boundary   | Valid future datetime      | A→B→D→F→H→J→L→M   | true   |
+|            | Datetime exactly = now     | A→B→D→F→H→J→L→M   | true   |
+|            | Datetime just before now   | A→B→D→F→H→J→L→M→N | false  |
+|            | (now − 1 min)              |                   |        |
+|            | Lower bound valid (00:00)  | A→B→D→F→H→J→L→M   | true   |
+|            | Upper bound valid (23:59)  | A→B→D→F→H→J→L→M   | true   |
 
 ---
 
@@ -97,7 +109,7 @@ At this stage, SQA mainly focuses on the `DateTimeChecker` class.
 
 ---
 
-## 6. SQA Actions, Methods and Findings
+## 6. SQA Roles,Actions and Methods
 
 ### Developer — Nafisa Tabassum
 
