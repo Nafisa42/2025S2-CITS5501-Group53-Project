@@ -6,6 +6,22 @@
 This project is a beginner's version of the **DateTimeChecker** program.
 The goal is to ensure the **syntactical** and **semantic** validation of dates and datetimes used in the **Tachi flight reservation system**.
 
+## Project Directory
+2025S2-CITS5501-Group53-Project/
+├── .github/workflows/ # GitHub Actions
+│ └── starter-checks.yml
+├── docs/ # Documentation and Flowcharts
+│ ├── isValidDate.drawio.png
+│ └── isValidDateTime.drawio.png
+├── src/ # Java source code and unit tests
+│ ├── DateTimeChecker.java # Date/time verification tools
+│ └── DateTimeCheckerTest.java # JUnit test
+├── starter_tests/ # Provided Python tests
+│ └── test_repository.py
+├── .gitignore # Git Ignore Rules
+├── README.md # Project description
+└── project-phase1-report.md # Stage Report (Markdown format)
+
 ## Function Description
 - **Date** validation (`isValidDate`)  
   - Format: `YYYY-MM-DD`  
