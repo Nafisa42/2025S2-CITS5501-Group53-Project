@@ -43,6 +43,43 @@ public class DateTimeCheckerTest {
         assertFalse(DateTimeChecker.isValidDateTime("2025-12-31 14:30"));
     }
 
+    // Datetime contains seconds: should fail
+    @Test
+    public void testDateTimeContainsSeconds_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T13:45:59"));
+    }
+
+    // Missing 'T' separator: should fail
+    @Test
+    public void testMissingTSeparator_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03 13:45"));
+    }
+
+    // Wrong separators in date: should fail
+    @Test
+    public void testWrongDateSeparators_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025/09/03T13:45"));
+    }
+
+    // Too short (missing minutes): should fail
+    @Test
+    public void testTooShort_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T13"));
+    }
+
+    // Non-digit character in time: should fail
+    @Test
+    public void testNonDigitInTime_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T12:4a"));
+    }
+
+    // Out-of-range time values: should fail
+    @Test
+    public void testOutOfRangeTime_ShouldFail() {
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T24:00"));
+        assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T23:60"));
+    }
+
     @Test
     public void testLeapYear_Feb29_Valid() {
         //Check leap year determination
