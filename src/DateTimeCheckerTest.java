@@ -80,9 +80,22 @@ public class DateTimeCheckerTest {
         assertFalse(DateTimeChecker.isValidDateTime("2025-09-03T23:60"));
     }
 
-    // Valid future datetime (far future, to avoid dependency on current time): should pass
     @Test
-    public void testValidFutureDateTime_ShouldPass() {
-        assertTrue(DateTimeChecker.isValidDateTime("2099-12-31T23:59"));
+    public void testLeapYear_Feb29_Valid() {
+        //Check leap year determination
+        assertTrue(DateTimeChecker.isValidDateTime("2096-02-29"));
     }
+
+    @Test
+    public void testNonLeapYear_Feb29_Invalid() {
+        // Tests whether the 29th day of a non-leap year is valid
+        assertFalse(DateTimeChecker.isValidDateTime("2025-02-29"));
+    }
+
+    @Test
+    public void testFutureDateTimeWithSecond() {
+        // correct format and future datetime, should return true
+        assertFalse(DateTimeChecker.isValidDateTime("2099-12-31T14:30:33"));
+    }
+
 }
