@@ -42,4 +42,23 @@ public class DateTimeCheckerTest {
         // wrong format (missing 'T' between date and time), should return false
         assertFalse(DateTimeChecker.isValidDateTime("2025-12-31 14:30"));
     }
+
+    @Test
+    public void testLeapYear_Feb29_Valid() {
+        //Check leap year determination
+        assertTrue(DateTimeChecker.isValidDateTime("2096-02-29"));
+    }
+
+    @Test
+    public void testNonLeapYear_Feb29_Invalid() {
+        // Tests whether the 29th day of a non-leap year is valid
+        assertFalse(DateTimeChecker.isValidDateTime("2025-02-29"));
+    }
+
+    @Test
+    public void testFutureDateTimeWithSecond() {
+        // correct format and future datetime, should return true
+        assertFalse(DateTimeChecker.isValidDateTime("2099-12-31T14:30:33"));
+    }
+
 }
