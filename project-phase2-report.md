@@ -55,3 +55,47 @@ unit’s error model, which distinguishes between syntactic and semantic errors.
 The constructor must guarantee that any constructed object represents a valid,
 executable command. This ensures downstream components can safely assume the
 command’s parameters are correct without performing redundant checks.
+
+## Task 5.2 – Input Space Partitioning
+
+### SegmentSubcommand constructor
+
+#### Coverage Level
+For this analysis the base choice coverage was applied. This approach selects one
+representative test from each input partition rather than attempting all possible
+combinations. Since the constructor has multiple parameters (origin, destination,
+number of passengers, and date), full combinatorial testing would quickly become
+unmanageable. Base choice strikes a balance by ensuring that each important input
+characteristic is tested at least once.
+
+#### Characteristics and Partitions
+From the specification, the following characteristics were identified as critical:
+
+1. **Origin code** – must be a three-letter uppercase airport code.  
+   - Valid (e.g., `PER`)  
+   - Invalid (wrong length, lowercase, or non-letter characters)
+
+2. **Number of passengers** – must be an integer between 1 and 10 inclusive.  
+   - Valid range (1–10)  
+   - Too few (<1)  
+   - Too many (>10)
+
+3. **Date** – must be in `YYYY-MM-DD` format and must not be in the past.  
+   - Valid (>= today)  
+   - Invalid format (e.g., `2025/09/01`)  
+   - Past date (before today)
+
+These characteristics were chosen because they directly influence whether the
+constructor will succeed or throw exceptions. For instance, airport codes are essential
+to identify flight segments, the passenger count is bounded for system constraints, and
+the date check prevents creating requests for flights that cannot exist.
+
+#### Test Cases
+| ID  | Fixtures | Input                                                    | Expected Outcome |
+|-----|----------|----------------------------------------------------------|------------------|
+| TC1 | —        | ORIGIN=PER, DEST=SYD, NUM_PEOPLE=1, DATE=today           | Success          |
+| TC2 | —        | ORIGIN=xx, DEST=SYD, NUM_PEOPLE=1, DATE=today            | SyntacticError   |
+| TC3 | —        | ORIGIN=PER, DEST=SYD, NUM_PEOPLE=20, DATE=last week      | SemanticError    |
+
+These three cases together ensure that each chosen partition is exercised at least once.
+
