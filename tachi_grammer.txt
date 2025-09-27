@@ -1,0 +1,24 @@
+<tachi_command> ::= <shop_flight_fare> | <air_book_request>
+
+<shop_flight_fare> ::= "shop" " " "flight" " " "fare" " " <airport> " " <airport> " " <trip_type>
+
+<trip_type> ::= "OneWay" " " <cabin> " " <date>
+              | "Return" " " <length_of_stay> " " <cabin> " " <date>
+
+<air_book_request> ::= "air" " " "book" " " "request" "\n" <seg_list> "\n" "EOC"
+
+<seg_list> ::= <seg_line> | <seg_line> "\n" <seg_list>
+
+<seg_line> ::= "seg" " " <airport> " " <airport> " " <flight_number> " " <date> " " <cabin> " " <people>
+
+<airport> ::= "PER" | "SYD" | "MEL" | "BNE"
+
+<cabin> ::= "P" | "F" | "J" | "C" | "S" | "Y"
+
+<length_of_stay> ::= "0" | "1" | "2" | "3"
+
+<people> ::= "1" | "2" | "3" | "4"
+
+<flight_number> ::= "QF567" | "SQ215" | "VA400"
+
+<date> ::= "2025-10-10" | "2025-11-01" | "2025-12-15"
