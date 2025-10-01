@@ -58,44 +58,101 @@ command’s parameters are correct without performing redundant checks.
 
 ## Task 5.2 – Input Space Partitioning
 
-### SegmentSubcommand constructor
+### Error Model (Fixture Assumptions)  
+- **SyntacticError** – raised when inputs break **format rules**. Examples:  
+  - Airport code not exactly three uppercase letters.  
+  - Flight number not matching regex `[A-Z]{2}\d{3,4}`.  
+  - Cabin type not one of `{P,F,J,C,S,Y}`.  
+
+- **SemanticError** – raised when inputs are well-formed but violate business rules. Examples:  
+  - Origin = destination.  
+  - Passengers outside 1–10.  
+  - Date ≤ today or > today+100.  
+  - Flight number not existing (passes format but     refers to no known service).  
+  - Length of Stay > 20.  
+
+**Fixture:** Inputs of type `LocalDate` are already guaranteed calendar-valid by upstream parsing. No string format errors for dates occur at this level.
+
+---
+
+### SegmentSubcommand Constructor – ISP Analysis
 
 #### Coverage Level
-For this analysis the base choice coverage was applied. This approach selects one
-representative test from each input partition rather than attempting all possible
-combinations. Since the constructor has multiple parameters (origin, destination,
-number of passengers, and date), full combinatorial testing would quickly become
-unmanageable. Base choice strikes a balance by ensuring that each important input
-characteristic is tested at least once.
+For this analysis the **Base Choice Coverage** strategy was applied. This method
+selects one representative test from each input partition rather than attempting
+all possible combinations. Since the constructor has multiple parameters (origin,
+destination, number of passengers, date, flight number, and cabin type), full
+combinatorial testing would be infeasible. Base Choice provides a balanced
+approach: it keeps the test suite small while ensuring that every important input
+characteristic is exercised at least once, including boundary and error partitions.
 
 #### Characteristics and Partitions
-From the specification, the following characteristics were identified as critical:
+| Characteristic       | Partition 1 (Valid)               | Partition 2 (Invalid/Special)                     | Error Type        |
+|----------------------|-----------------------------------|--------------------------------------------------|------------------|
+| Origin code          | 3-letter uppercase (e.g. PER)     | wrong length / lowercase / non-letters           | SyntacticError   |
+| Destination code     | 3-letter uppercase (≠ origin)     | same as origin                                   | SemanticError    |
+| Number of passengers | 1–10 inclusive                   | <1 or >10                                        | SemanticError    |
+| Date (LocalDate)     | > today and ≤ today+100          | today or < today / > today+100                   | SemanticError    |
+| Flight number        | matches `[A-Z]{2}\d{3,4}`        | wrong format (e.g., AA12, A12345)                | SyntacticError   |
+| Cabin type           | P,F,J,C,S,Y                      | anything else (e.g., Z)                          | SyntacticError   |
 
-1. **Origin code** – must be a three-letter uppercase airport code.  
-   - Valid (e.g., `PER`)  
-   - Invalid (wrong length, lowercase, or non-letter characters)
+#### Justification
+These characteristics were selected because they each determine whether the
+constructor can create a valid flight segment or must raise an exception. The
+airport codes (origin and destination) are essential for identifying valid routes,
+and errors in their format or equality would invalidate the request. The passenger
+count is bounded by system limits (1–10), so violations indicate an impossible
+booking. The date must be in the future but within 100 days, which prevents
+unrealistic or expired flight requests. The flight number must follow the required
+airline code and numeric pattern, since this identifies the specific service. The
+cabin type enforces business rules on class of travel. Together, these features
+capture the core constraints defined in the specification, so testing their
+partitions ensures both success and error outcomes are covered.
 
-2. **Number of passengers** – must be an integer between 1 and 10 inclusive.  
-   - Valid range (1–10)  
-   - Too few (<1)  
-   - Too many (>10)
+#### Test Cases  
+| ID  | Variation            | Input (relative to base)                                  | Expected Outcome |
+|-----|----------------------|-----------------------------------------------------------|------------------|
+| TC1 | Base                 | ORIGIN=PER, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y | Success |
+| TC2 | Invalid Origin       | ORIGIN=xx, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y | SyntacticError |
+| TC3 | Too Many Passengers  | ORIGIN=PER, DEST=SYD, NUM=20, DATE=tomorrow, FL=QF123, CABIN=Y | SemanticError |
+| TC4 | Date = today         | ORIGIN=PER, DEST=SYD, NUM=1, DATE=today, FL=QF123, CABIN=Y   | SemanticError |
 
-3. **Date** – must be in `YYYY-MM-DD` format and must not be in the past.  
-   - Valid (>= today)  
-   - Invalid format (e.g., `2025/09/01`)  
-   - Past date (before today)
+Each characteristic’s invalid partition is exercised at least once, while keeping tests simple and
+non-overlapping.
 
-These characteristics were chosen because they directly influence whether the
-constructor will succeed or throw exceptions. For instance, airport codes are essential
-to identify flight segments, the passenger count is bounded for system constraints, and
-the date check prevents creating requests for flights that cannot exist.
+---
 
-#### Test Cases
-| ID  | Fixtures | Input                                                    | Expected Outcome |
-|-----|----------|----------------------------------------------------------|------------------|
-| TC1 | —        | ORIGIN=PER, DEST=SYD, NUM_PEOPLE=1, DATE=today           | Success          |
-| TC2 | —        | ORIGIN=xx, DEST=SYD, NUM_PEOPLE=1, DATE=today            | SyntacticError   |
-| TC3 | —        | ORIGIN=PER, DEST=SYD, NUM_PEOPLE=20, DATE=last week      | SemanticError    |
+### Additional Constructor – ShopFlightFareCommand
 
-These three cases together ensure that each chosen partition is exercised at least once.
+#### Coverage Level
+The same **Base Choice Coverage** strategy was used. The constructor has multiple
+parameters (origin, destination, trip type, length of stay, date, and cabin type).
+A full combinatorial approach would be excessive, so Base Choice ensures each
+important characteristic is tested at least once.
 
+#### Characteristics and Partitions  
+| Characteristic | Partition 1 (Valid)                | Partition 2 (Invalid/Special)         | Error Type      |
+|----------------|------------------------------------|---------------------------------------|-----------------|
+| Trip type      | OneWay, Return                     | anything else                         | SyntacticError  |
+| Length of Stay | 0–20 (Return only)                 | absent (when Return) / >20            | SemanticError   |
+| Departure date | > today and ≤ today+100            | today / < today / > today+100         | SemanticError   |
+| Cabin type     | P,F,J,C,S,Y                        | anything else                         | SyntacticError  |
+
+#### Justification
+These characteristics were chosen because they reflect the main business rules
+governing flight fare searches. The trip type (OneWay or Return) is central to the
+command’s behaviour, while the length of stay only applies when a return trip is
+requested. The departure date is bounded to avoid expired or unrealistic queries,
+and the cabin type ensures class codes conform to airline conventions. Testing
+these partitions ensures that the constructor either produces a valid command or
+fails with the correct exception.
+
+#### Test Cases  
+| ID  | Input                                               | Expected Outcome |
+|-----|-----------------------------------------------------|------------------|
+| SFC1 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=tomorrow, CABIN=Y | Success |
+| SFC2 | ORIGIN=PER, DEST=SYD, TRIP=Return, LOS=25, DATE=tomorrow, CABIN=Y | SemanticError |
+| SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=Y | SemanticError |
+
+This minimal ISP set ensures that both syntactic and semantic invalids are
+exercised for `ShopFlightFareCommand`.
