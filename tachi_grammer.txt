@@ -5,20 +5,40 @@
 <trip_type> ::= "OneWay" " " <cabin> " " <date>
               | "Return" " " <length_of_stay> " " <cabin> " " <date>
 
-<air_book_request> ::= "air" " " "book" " " "request" "\n" <seg_list> "\n" "EOC"
+<air_book_request> ::= "air" " " "book" " " "request" "\n" <seg_list> "\n" "EOC" "\n"
 
 <seg_list> ::= <seg_line> | <seg_line> "\n" <seg_list>
 
 <seg_line> ::= "seg" " " <airport> " " <airport> " " <flight_number> " " <date> " " <cabin> " " <people>
 
-<airport> ::= "PER" | "SYD" | "MEL" | "BNE"
+<airport> ::= <UPPER> <UPPER> <UPPER>
+
+<flight_number> ::= <airline_code2> <digit>
+                  | <airline_code2> <digit> <digit>
+                  | <airline_code2> <digit> <digit> <digit>
+                  | <airline_code2> <digit> <digit> <digit> <digit>
+
+<airline_code2> ::= <UPPER> <UPPER>
+
+<date> ::= <year> "-" <month> "-" <day>
+
+<year> ::= <digit> <digit> <digit> <digit>
+
+<month> ::= "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09" | "10" | "11" | "12"
+
+<day> ::= "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09"
+        | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19"
+        | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30" | "31"
 
 <cabin> ::= "P" | "F" | "J" | "C" | "S" | "Y"
 
-<length_of_stay> ::= "0" | "1" | "2" | "3"
+<length_of_stay> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+                   | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20"
 
-<people> ::= "1" | "2" | "3" | "4"
+<people> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
 
-<flight_number> ::= "QF567" | "SQ215" | "VA400"
+<UPPER> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+          | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+          | "U" | "V" | "W" | "X" | "Y" | "Z"
 
-<date> ::= "2025-10-10" | "2025-11-01" | "2025-12-15"
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
