@@ -1,5 +1,189 @@
 # Project Phase 2 Report
 
+## Task 4.2 - Command grammer quality
+
+This section documents the strategies, techniques, coverage criteria,
+automation level, and improvements applied to grammar validation.  
+The goal is to keep the grammar specification correct, clear, and concise,  
+and ensure QA activities are systematic and effective.
+
+### 4.2.1 High-level Strategies
+
+#### Documentation and Annotation
+
+- Used consistent naming for non-terminals (e.g. `<tachi_command>`),
+  improving readability and avoiding ambiguity.
+- Adopted a unified BNF/EBNF format to prevent inconsistencies.
+- Added structured comments for better maintainability.
+
+#### BNF Playground Validation
+
+- Applied the Playground to write and test rules, using built-in “Grammar Help.”
+- Validated incrementally so each rule was tested before integration.
+
+#### Collaborative QA
+
+- Used GitHub for team-wide QA.
+- All grammar changes required PRs and peer review.
+- CI/CD workflows automatically checked syntax and formatting.
+
+### 4.2.2 Techniques
+
+#### GitHub-based QA
+
+- **Pull Request Review**: Each change reviewed by at least one teammate to
+  ensure correctness and clarity.
+- **CI Workflows**: Automated tests after commits verified parsing and
+  formatting.
+- **Issue Tracking**: Errors and suggestions logged in GitHub Issues.
+- **Traceability**: Git commits recorded all changes with rationale.
+
+#### Grammar Testing and Validation
+
+- **Fuzz Testing**: Playground’s random generator produced many test inputs,
+  exposing ambiguities and edge cases.
+
+  ![Testing Diagram](docs/img/1.png)  
+  ![Testing Diagram](docs/img/2.png)  
+  ![Testing Diagram](docs/img/3.png)
+
+- **Incremental Testing**: Simple rules tested first, then complex ones,
+  reducing regressions.
+
+  Taking `<air_book_request>` as an Example:
+
+  #### shop_flight_fare - Minimum Legitimacy (OneWay)
+
+  ![Testing Diagram](docs/img/4.png)
+
+  #### trip_type - two branches + boundary (Return + stay=0)
+
+  ![Testing Diagram](docs/img/5.png)
+
+  #### length_of_stay - upper bound (20)
+
+  ![Testing Diagram](docs/img/6.png)
+
+  #### airport - both must be legal (all uppercase 3 letters)
+
+  ![Testing Diagram](docs/img/7.png)
+
+  #### date - boundary day/month (01/12, 01/31)
+
+  ![Testing Diagram](docs/img/8.png)
+
+- **Rule Validation**: Each production rule validated individually,
+  confirming internal consistency and absence of syntax errors.
+
+  Taking `<air_book_request>` as an example:
+
+  ##### Legal
+
+  - Basic legal use case (single flight segment)  
+    ![Testing Diagram](docs/img/9.png)
+
+  - Multiple valid use cases (recursive seg_list + flight number of different
+    lengths)  
+    ![Testing Diagram](docs/img/10.png)
+
+  - People boundary (maximum number of people 10)  
+    ![Testing Diagram](docs/img/11.png)
+
+  ##### Illegal
+
+  - The airline has two missing letters  
+    ![Testing Diagram](docs/img/12.png)
+
+  - Number exceeds the limit (11)  
+    ![Testing Diagram](docs/img/13.png)
+
+  - Lack of EOC (incomplete ending)  
+    ![Testing Diagram](docs/img/14.png)
+
+### 4.2.3 Coverage Criteria
+
+To guarantee completeness we applied:
+
+#### Production Coverage (PDC)
+
+Each rule tested at least once. For our grammar, PDC needs ~11–12 commands:
+
+#### shop_flight_fare
+
+- `OneWay / Return` branches
+- `length_of_stay` bounds (0, 20)
+- `cabin` at least one valid cabin
+- `date` at least one valid date
+- `airport` at least twice
+
+#### air_book_request
+
+- `seg_list` single vs multi-line recursion
+- `flight_number` lengths 1–4 digits
+- `people` bounds (1, 10)
+- `cabin` at least one valid
+- `date` and `airport` at least once
+
+_Reason_: Ensures every rule and uncommon variants are tested.
+
+#### Derivation Coverage (DC)
+
+Selected derivation paths tested deeply to explore boundaries and detect
+ambiguities.
+
+#### shop flight fare command
+
+- Branch × boundary (e.g., `Return` + stay=20 + edge date)
+- Compare `OneWay` vs `Return`
+- Date extremes (day 01 vs 31, month 01 vs 12)
+- Negative cases (lowercase airports, invalid dates, extra spaces)
+
+#### air book request command
+
+- Multi-segment recursion × flight number lengths
+- `people` = 10 in last segment
+- Date extremes (day 01 vs 31, month 01 vs 12)
+- Negative cases (lowercase, invalid dates, extra spaces)
+
+_Reason_: DC focuses on rule interactions and semantic boundaries.
+
+### 4.2.4 Degree of Automation
+
+#### Automated Components
+
+- Grammar parsing with Playground.
+- Fuzz testing via random input generator.
+- CI/CD pipelines validating each commit or PR.
+
+#### Manual Components
+
+- Comment/readability checks: clarity and conciseness reviewed manually.
+- Naming conventions: verified against project rules.
+- Peer review: essential to resolve ambiguities and ensure shared understanding.
+
+### 4.2.5 Improvements
+
+#### Comment and Readability Checks
+
+- **Limitation**: Tools cannot judge clarity.
+- **Improvement**: Add linters for missing or malformed comments.
+
+#### Naming Conventions
+
+- **Limitation**: Now enforced only by review.
+- **Improvement**: Add checklist and CI script to validate naming.
+
+#### Peer Review
+
+- **Limitation**: Time-consuming but necessary.
+- **Improvement**: Use AI tool(copilot) and diff visualization to highlight rule changes.
+
+#### Configuration Consistency
+
+- **Limitation**: Grammar syntax does not ensure config consistency.
+- **Improvement**: Add validation or checklist to ensure grammar matches
+  configuration ranges (e.g., `NUM_PEOPLE` 1–10, `LENGTH_OF_STAY` 0–20).
+
 ## Task 5.1 – ShopFlightFareCommand constructor analysis
 
 ### Preconditions
@@ -32,6 +216,7 @@
 - **Valid Object Construction**  
   When all preconditions are satisfied, a `ShopFlightFareCommand` instance is
   created with consistent internal state:
+
   - Stores origin and destination codes.
   - Records trip type. For OneWay trips, LOS is absent. For Return trips, a
     valid LOS (0–20) is stored.
@@ -53,29 +238,33 @@ command’s parameters are correct without performing redundant checks.
 
 ## Task 5.2 – Input Space Partitioning
 
-### Error Model (Fixture Assumptions)  
-- **SyntacticError** – raised when inputs break **format rules**. Examples:  
-  - Airport code not exactly three uppercase letters.  
-  - Flight number not matching regex `[A-Z]{2}\d{3,4}`.  
-  - Cabin type not one of `{P,F,J,C,S,Y}`.  
+### Error Model (Fixture Assumptions)
 
-- **SemanticError** – raised when inputs are well-formed but violate business rules. Examples:  
-  - Origin = destination.  
-  - Passengers outside 1–10.  
-  - Date ≤ today or > today+100.  
-  - Flight number not existing (passes format but refers to no known service).  
-  - Length of Stay > 20.  
+- **SyntacticError** – raised when inputs break **format rules**. Examples:
+
+  - Airport code not exactly three uppercase letters.
+  - Flight number not matching regex `[A-Z]{2}\d{3,4}`.
+  - Cabin type not one of `{P,F,J,C,S,Y}`.
+
+- **SemanticError** – raised when inputs are well-formed but violate business rules. Examples:
+  - Origin = destination.
+  - Passengers outside 1–10.
+  - Date ≤ today or > today+100.
+  - Flight number not existing (passes format but refers to no known service).
+  - Length of Stay > 20.
 
 **Fixture:** Inputs of type `LocalDate` are already guaranteed calendar-valid by upstream parsing. No string format errors for dates occur at this level.
 
 ---
 
 ### ISP Steps
-The Input Space Partitioning (ISP) process followed here is:  
-1. Identify input objects (e.g., origin, destination, passengers, date, flight number, cabin type).  
-2. Define characteristics for each input object (format, range, uniqueness, etc.).  
-3. Derive partitions (valid vs invalid cases).  
-4. Select a coverage criterion (Base Choice Coverage).  
+
+The Input Space Partitioning (ISP) process followed here is:
+
+1. Identify input objects (e.g., origin, destination, passengers, date, flight number, cabin type).
+2. Define characteristics for each input object (format, range, uniqueness, etc.).
+3. Derive partitions (valid vs invalid cases).
+4. Select a coverage criterion (Base Choice Coverage).
 5. Generate test cases from the chosen partitions.
 
 ---
@@ -83,46 +272,51 @@ The Input Space Partitioning (ISP) process followed here is:
 ### SegmentSubcommand Constructor – ISP Analysis
 
 #### Coverage Level
+
 For this analysis the **Base Choice Coverage** strategy was applied. This method selects one representative test from each input partition rather than attempting all possible combinations. Since the constructor has multiple parameters (origin,
 destination, number of passengers, date, flight number, and cabin type), full combinatorial testing would be infeasible. Base Choice provides a balanced
 approach: it keeps the test suite small while ensuring that every important input characteristic is exercised at least once, including boundary and error partitions.
 
 #### Characteristics and Partitions
-| Input Object       | Characteristic       | Partitions (Valid / Invalid)                        | Error Type      |
-|--------------------|----------------------|----------------------------------------------------|-----------------|
-| Origin code        | Format legality      | 3-letter uppercase / wrong length or invalid chars | SyntacticError  |
-| Destination code   | Relation to origin   | Different from origin / same as origin             | SemanticError   |
-| Number of passengers | Range              | 1–10 inclusive / <1 or >10                         | SemanticError   |
-| Date (LocalDate)   | Time semantics       | > today and ≤ today+100 / today, < today, >100 days| SemanticError   |
-| Flight number      | Regex format         | `[A-Z]{2}\d{3,4}` / wrong format                   | SyntacticError  |
-| Cabin type         | Membership           | P,F,J,C,S,Y / anything else                        | SyntacticError  |
+
+| Input Object         | Characteristic     | Partitions (Valid / Invalid)                        | Error Type     |
+| -------------------- | ------------------ | --------------------------------------------------- | -------------- |
+| Origin code          | Format legality    | 3-letter uppercase / wrong length or invalid chars  | SyntacticError |
+| Destination code     | Relation to origin | Different from origin / same as origin              | SemanticError  |
+| Number of passengers | Range              | 1–10 inclusive / <1 or >10                          | SemanticError  |
+| Date (LocalDate)     | Time semantics     | > today and ≤ today+100 / today, < today, >100 days | SemanticError  |
+| Flight number        | Regex format       | `[A-Z]{2}\d{3,4}` / wrong format                    | SyntacticError |
+| Cabin type           | Membership         | P,F,J,C,S,Y / anything else                         | SyntacticError |
 
 #### Justification
 
-- **Origin code**  
-  - *Source*: Tachi spec requires IATA 3-letter uppercase codes.  
-  - *Method*: Functionality-based partitioning (valid vs invalid string format).  
-  - *Why chosen*: Airport code validity is foundational; if incorrect, no segment can be created.
+- **Origin code**
 
-- **Date**  
-  - *Source*: Business rule restricts travel date to after today and within 100 days.  
-  - *Method*: Boundary-value partitioning (today, <today, >today+100).  
-  - *Why chosen*: Dates are highly error-prone; boundaries often cause failures.
+  - _Source_: Tachi spec requires IATA 3-letter uppercase codes.
+  - _Method_: Functionality-based partitioning (valid vs invalid string format).
+  - _Why chosen_: Airport code validity is foundational; if incorrect, no segment can be created.
 
-- **Passengers**  
-  - *Source*: System constraint of 1–10 passengers per booking.  
-  - *Method*: Range-based partitioning (valid range, underflow, overflow).  
-  - *Why chosen*: Passenger count limits are critical to prevent invalid or unrealistic requests.
+- **Date**
+
+  - _Source_: Business rule restricts travel date to after today and within 100 days.
+  - _Method_: Boundary-value partitioning (today, <today, >today+100).
+  - _Why chosen_: Dates are highly error-prone; boundaries often cause failures.
+
+- **Passengers**
+  - _Source_: System constraint of 1–10 passengers per booking.
+  - _Method_: Range-based partitioning (valid range, underflow, overflow).
+  - _Why chosen_: Passenger count limits are critical to prevent invalid or unrealistic requests.
 
 Together, these ensure coverage of the most failure-prone characteristics, while the other features (destination, flight number, cabin type) are still captured in the table and tested.
 
-#### Test Cases  
-| ID  | Variation            | Input (relative to base)                                  | Expected Outcome |
-|-----|----------------------|-----------------------------------------------------------|------------------|
-| TC1 | Base                 | ORIGIN=PER, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y | Success |
-| TC2 | Invalid Origin       | ORIGIN=xx, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y | SyntacticError |
-| TC3 | Too Many Passengers  | ORIGIN=PER, DEST=SYD, NUM=20, DATE=tomorrow, FL=QF123, CABIN=Y | SemanticError |
-| TC4 | Date = today         | ORIGIN=PER, DEST=SYD, NUM=1, DATE=today, FL=QF123, CABIN=Y   | SemanticError |
+#### Test Cases
+
+| ID  | Variation           | Input (relative to base)                                       | Expected Outcome |
+| --- | ------------------- | -------------------------------------------------------------- | ---------------- |
+| TC1 | Base                | ORIGIN=PER, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y  | Success          |
+| TC2 | Invalid Origin      | ORIGIN=xx, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y   | SyntacticError   |
+| TC3 | Too Many Passengers | ORIGIN=PER, DEST=SYD, NUM=20, DATE=tomorrow, FL=QF123, CABIN=Y | SemanticError    |
+| TC4 | Date = today        | ORIGIN=PER, DEST=SYD, NUM=1, DATE=today, FL=QF123, CABIN=Y     | SemanticError    |
 
 Each characteristic’s invalid partition is exercised at least once, while keeping tests simple and
 non-overlapping.
@@ -132,24 +326,28 @@ non-overlapping.
 ### Additional Constructor – ShopFlightFareCommand
 
 #### Coverage Level
+
 The same **Base Choice Coverage** strategy was used. The constructor has multiple parameters (origin, destination, trip type, length of stay, date, and cabin type). A full combinatorial approach would be excessive, so Base Choice ensures each important characteristic is tested at least once.
 
-#### Characteristics and Partitions  
-| Input Object   | Characteristic     | Partitions (Valid / Invalid)            | Error Type      |
-|----------------|--------------------|-----------------------------------------|-----------------|
-| Trip type      | Allowed values     | OneWay, Return / anything else          | SyntacticError  |
-| Length of Stay | Range (Return only)| 0–20 / absent or >20                    | SemanticError   |
-| Departure date | Time semantics     | > today and ≤ today+100 / today, <today, >100 days | SemanticError |
-| Cabin type     | Membership         | P,F,J,C,S,Y / anything else             | SyntacticError  |
+#### Characteristics and Partitions
+
+| Input Object   | Characteristic      | Partitions (Valid / Invalid)                       | Error Type     |
+| -------------- | ------------------- | -------------------------------------------------- | -------------- |
+| Trip type      | Allowed values      | OneWay, Return / anything else                     | SyntacticError |
+| Length of Stay | Range (Return only) | 0–20 / absent or >20                               | SemanticError  |
+| Departure date | Time semantics      | > today and ≤ today+100 / today, <today, >100 days | SemanticError  |
+| Cabin type     | Membership          | P,F,J,C,S,Y / anything else                        | SyntacticError |
 
 #### Justification
+
 These characteristics were chosen because they reflect the main business rules governing flight fare searches. The trip type (OneWay or Return) is central to the command’s behaviour, while the length of stay only applies when a return trip is requested. The departure date is bounded to avoid expired or unrealistic queries, and the cabin type ensures class codes conform to airline conventions. Testing these partitions ensures that the constructor either produces a valid command or fails with the correct exception.
 
-#### Test Cases  
-| ID  | Input                                               | Expected Outcome |
-|-----|-----------------------------------------------------|------------------|
-| SFC1 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=tomorrow, CABIN=Y | Success |
-| SFC2 | ORIGIN=PER, DEST=SYD, TRIP=Return, LOS=25, DATE=tomorrow, CABIN=Y | SemanticError |
-| SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=Y | SemanticError |
+#### Test Cases
+
+| ID   | Input                                                             | Expected Outcome |
+| ---- | ----------------------------------------------------------------- | ---------------- |
+| SFC1 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=tomorrow, CABIN=Y         | Success          |
+| SFC2 | ORIGIN=PER, DEST=SYD, TRIP=Return, LOS=25, DATE=tomorrow, CABIN=Y | SemanticError    |
+| SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=Y            | SemanticError    |
 
 This minimal ISP set ensures that both syntactic and semantic invalids are exercised for `ShopFlightFareCommand`.
