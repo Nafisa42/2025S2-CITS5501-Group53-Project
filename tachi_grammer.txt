@@ -1,18 +1,23 @@
+/* Start symbol: Tachi commands */
 <tachi_command> ::= <shop_flight_fare> | <air_book_request>
 
+/* Shop flight fare command */
 <shop_flight_fare> ::= "shop" " " "flight" " " "fare" " " <airport> " " <airport> " " <trip_type>
 
 <trip_type> ::= "OneWay" " " <cabin> " " <date>
               | "Return" " " <length_of_stay> " " <cabin> " " <date>
 
+/* Air book request: one or more seg lines, then EOC */
 <air_book_request> ::= "air" " " "book" " " "request" "\n" <seg_list> "\n" "EOC" "\n"
 
 <seg_list> ::= <seg_line> | <seg_line> "\n" <seg_list>
 
 <seg_line> ::= "seg" " " <airport> " " <airport> " " <flight_number> " " <date> " " <cabin> " " <people>
 
+/* Airports: 3 uppercase letters */
 <airport> ::= <UPPER> <UPPER> <UPPER>
 
+/* Flight number: 2 letters + 1–4 digits */
 <flight_number> ::= <airline_code2> <digit>
                   | <airline_code2> <digit> <digit>
                   | <airline_code2> <digit> <digit> <digit>
@@ -20,6 +25,7 @@
 
 <airline_code2> ::= <UPPER> <UPPER>
 
+/* Date: YYYY-MM-DD */
 <date> ::= <year> "-" <month> "-" <day>
 
 <year> ::= <digit> <digit> <digit> <digit>
@@ -30,13 +36,16 @@
         | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19"
         | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30" | "31"
 
+/* Cabin classes */
 <cabin> ::= "P" | "F" | "J" | "C" | "S" | "Y"
 
+/* Trip parameters */
 <length_of_stay> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
                    | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20"
 
 <people> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
 
+/* Character sets */
 <UPPER> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
           | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
           | "U" | "V" | "W" | "X" | "Y" | "Z"
