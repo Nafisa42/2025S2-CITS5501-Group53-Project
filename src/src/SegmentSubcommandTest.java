@@ -73,4 +73,17 @@ public class SegmentSubcommandTest {
         // Act + Assert
         // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
     }
+
+        /**
+     * Test ID: SS-TC5
+     * Syntactic invalid — bad IATA airport code format.
+     */
+    @Test
+    public void testSyntactic_BadIata_shell() {
+        // Arrange
+        // TODO: use invalid IATA like "P3R" or "Sydney"
+    
+        // Act + Assert
+        // TODO: assertThrows(SyntacticError.class, () -> new SegmentSubcommand(...));
+    }
 }
