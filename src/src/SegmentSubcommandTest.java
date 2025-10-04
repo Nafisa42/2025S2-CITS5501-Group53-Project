@@ -4,9 +4,18 @@ import java.time.LocalDate;
 
 /**
  * Phase 2 Task 5.3 — SegmentSubcommandTest
- * TODO:
- * 1) Fill real constructor args after checking JAR.
- * 2) Map TC IDs to Task 5.2.
+ *
+ * Mapping to Task 5.2 ISP test IDs:
+ *  - SS-TC1: Baseline valid segment
+ *  - SS-TC2: Same origin and destination (SemanticError)
+ *  - SS-TC3: Departure date on/before today (SemanticError)
+ *  - SS-TC4: numPeople outside 1–10 (SemanticError)
+ *  - SS-TC5: Invalid IATA code format (SyntacticError)
+ *  - SS-TC6: Invalid flight number format (SyntacticError)
+ *
+ * @implNote These tests correspond directly to the characteristics and partitions
+ *           defined in Task 5.2 (trip/LOS, airports, date, cabin/people).
+ * @see project-phase2-report.md  // Task 5.2 section
  */
 
 public class SegmentSubcommandTest {
