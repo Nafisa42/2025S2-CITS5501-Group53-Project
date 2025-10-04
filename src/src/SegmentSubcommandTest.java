@@ -47,4 +47,17 @@ public class SegmentSubcommandTest {
         // Act + Assert
         // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
     }
+
+        /**
+     * Test ID: SS-TC3
+     * Semantic invalid — departure date on or before today.
+     */
+    @Test
+    public void testSemantic_DateOnOrBefore_shell() {
+        // Arrange
+        // TODO: use date equal to or before LocalDate.now()
+    
+        // Act + Assert
+        // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
+    }
 }
