@@ -86,4 +86,17 @@ public class SegmentSubcommandTest {
         // Act + Assert
         // TODO: assertThrows(SyntacticError.class, () -> new SegmentSubcommand(...));
     }
+
+        /**
+     * Test ID: SS-TC6
+     * Syntactic invalid — bad flight number format.
+     */
+    @Test
+    public void testSyntactic_BadFlight_shell() {
+        // Arrange
+        // TODO: use invalid flight number like "QF" or "12345"
+    
+        // Act + Assert
+        // TODO: assertThrows(SyntacticError.class, () -> new SegmentSubcommand(...));
+    }
 }
