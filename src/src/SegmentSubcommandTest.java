@@ -34,4 +34,17 @@ public class SegmentSubcommandTest {
         // Assert
         // TODO: assertSegmentFields(seg);
     }
+
+        /**
+     * Test ID: SS-TC2
+     * Semantic invalid — origin equals destination.
+     */
+    @Test
+    public void testSemantic_SameOriginDest_shell() {
+        // Arrange
+        // TODO: use identical airports (e.g., PER → PER)
+    
+        // Act + Assert
+        // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
+    }
 }
