@@ -11,14 +11,27 @@ import java.time.LocalDate;
 
 public class SegmentSubcommandTest {
 
-    // Base fixtures (can be adjusted later)
     private static final String ORIGIN = "PER";
     private static final String DEST   = "SYD";
     private static final String FLIGHT = "QF123";
 
-    // Helper method stub (to be implemented later)
     private void assertSegmentFields(Object seg) {
         // TODO: replace Object with SegmentSubcommand and assert getters
     }
 
+    /**
+     * Test ID: SS-TC1
+     * Baseline valid segment — Arrange/Act/Assert placeholders only.
+     */
+    @Test
+    public void testValidSegment_Baseline_shell() {
+        // Arrange
+        // TODO: prepare minimal valid args (PER → SYD, QF123, tomorrow, cabin Y)
+
+        // Act
+        // TODO: create SegmentSubcommand seg = new SegmentSubcommand(...);
+
+        // Assert
+        // TODO: assertSegmentFields(seg);
+    }
 }
