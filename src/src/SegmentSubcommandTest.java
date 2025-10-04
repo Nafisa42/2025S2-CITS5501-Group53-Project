@@ -60,4 +60,17 @@ public class SegmentSubcommandTest {
         // Act + Assert
         // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
     }
+
+        /**
+     * Test ID: SS-TC4
+     * Semantic invalid — number of people out of allowed range.
+     */
+    @Test
+    public void testSemantic_PeopleRange_shell() {
+        // Arrange
+        // TODO: use numPeople = 0 or 11 (outside valid range 1–10)
+    
+        // Act + Assert
+        // TODO: assertThrows(SemanticError.class, () -> new SegmentSubcommand(...));
+    }
 }
