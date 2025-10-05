@@ -51,9 +51,9 @@ public class SegmentSubcommandTest {
                 "toString() should contain key fields");
     }
 
-    /**
+     /**
      * Test ID: SS-TC1
-     * Baseline valid segment — Arrange/Act/Assert placeholders only.
+     * Baseline valid segment — full implementation with AAA structure.
      */
     @Test
     public void testValidSegment_Baseline() {
