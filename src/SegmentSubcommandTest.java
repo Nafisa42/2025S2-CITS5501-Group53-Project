@@ -55,15 +55,14 @@ public class SegmentSubcommandTest {
      * Baseline valid segment — Arrange/Act/Assert placeholders only.
      */
     @Test
-    public void testValidSegment_Baseline_shell() {
-        // Arrange
-        // TODO: prepare minimal valid args (PER → SYD, QF123, tomorrow, cabin Y)
-
-        // Act
-        // TODO: create SegmentSubcommand seg = new SegmentSubcommand(...);
-
-        // Assert
-        // TODO: assertSegmentFields(seg);
+    public void testValidSegment_Baseline() {
+        // Arrange: Prepare valid input parameters (PER → SYD, QF123, tomorrow, Economy, 1 passenger)
+    
+        // Act: Construct a valid SegmentSubcommand instance
+        SegmentSubcommand seg = buildValid();
+    
+        // Assert: Verify all getter values and toString() contents
+        assertSegmentFields(seg);
     }
 
         /**
