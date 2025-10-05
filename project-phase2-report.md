@@ -3,9 +3,18 @@
 ## Task 4.2 - Command grammer quality
 
 This section documents the strategies, techniques, coverage criteria,
-automation level, and improvements applied to grammar validation.  
-The goal is to keep the grammar specification correct, clear, and concise,  
-and ensure QA activities are systematic and effective.
+automation level, and improvements applied to grammar validation.
+
+Our grammar is:
+
+**Correct**
+Compiles and runs in BNF Playground with no syntax errors, demonstrating structurally valid and internally consistent rules.
+
+**Clear**
+Uses consistent naming, a unified BNF/EBNF format, and structured comments, which improve readability and ease maintenance.
+
+**Concise**
+Removes redundant/overlapping rules, keeping only the minimal set needed for complete coverage and lower complexity.
 
 ### 4.2.1 High-level Strategies
 
@@ -33,9 +42,11 @@ and ensure QA activities are systematic and effective.
 
 - **Pull Request Review**: Each change reviewed by at least one teammate to
   ensure correctness and clarity.
+
+  [View example PR on GitHub ](https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/pull/37)
+
 - **CI Workflows**: Automated tests after commits verified parsing and
   formatting.
-- **Issue Tracking**: Errors and suggestions logged in GitHub Issues.
 - **Traceability**: Git commits recorded all changes with rationale.
 
 #### Grammar Testing and Validation
@@ -77,7 +88,7 @@ and ensure QA activities are systematic and effective.
 
   Taking `<air_book_request>` as an example:
 
-  ##### Legal
+  ##### **Legal**
 
   - Basic legal use case (single flight segment)  
     ![Testing Diagram](docs/img/9.png)
@@ -89,7 +100,7 @@ and ensure QA activities are systematic and effective.
   - People boundary (maximum number of people 10)  
     ![Testing Diagram](docs/img/11.png)
 
-  ##### Illegal
+  ##### **Illegal**
 
   - The airline has two missing letters  
     ![Testing Diagram](docs/img/12.png)
@@ -106,7 +117,7 @@ To guarantee completeness we applied:
 
 #### Production Coverage (PDC)
 
-Each rule tested at least once. For our grammar, PDC needs ~11–12 commands:
+Each rule tested at least once. For our grammar, PDC needs 11–12 commands:
 
 #### shop_flight_fare
 
@@ -124,7 +135,8 @@ Each rule tested at least once. For our grammar, PDC needs ~11–12 commands:
 - `cabin` at least one valid
 - `date` and `airport` at least once
 
-_Reason_: Ensures every rule and uncommon variants are tested.
+_Reason_:PDC This approach avoids untested or unreachable rules while maintaining manageable test size.
+It provides balanced coverage for nested and recursive structures (e.g., <seg_list>), ensuring the grammar remains functionally complete and semantically valid without exhaustive combinations.
 
 #### Derivation Coverage (DC)
 
@@ -145,7 +157,9 @@ ambiguities.
 - Date extremes (day 01 vs 31, month 01 vs 12)
 - Negative cases (lowercase, invalid dates, extra spaces)
 
-_Reason_: DC focuses on rule interactions and semantic boundaries.
+_Reason_: It helps uncover ambiguities, overlapping rules, or semantic conflicts when valid rules are combined.
+
+Together with PDC, it ensures both breadth (rule coverage) and depth (interaction coverage), improving overall robustness.
 
 ### 4.2.4 Degree of Automation
 
@@ -165,24 +179,27 @@ _Reason_: DC focuses on rule interactions and semantic boundaries.
 
 #### Comment and Readability Checks
 
-- **Limitation**: Tools cannot judge clarity.
-- **Improvement**: Add linters for missing or malformed comments.
+- **Limitation**: Tools can’t judge clarity/readability.
+- **Improvement**: Add **linters** + a **comment checklist** to flag missing/malformed comments.  
+  Require 1–2 line annotations per production (e.g., explain `<seg_list>` recursion intent).
 
 #### Naming Conventions
 
-- **Limitation**: Now enforced only by review.
-- **Improvement**: Add checklist and CI script to validate naming.
+- **Limitation**: Enforced mainly by manual review.
+- **Improvement**: Add CI rules to validate non-terminal style (e.g., `lower_snake_case`) and reserved prefixes.  
+  Block PRs when names drift (e.g., `<TripType>` vs `<trip_type>`).
 
 #### Peer Review
 
-- **Limitation**: Time-consuming but necessary.
-- **Improvement**: Use AI tool(copilot) and diff visualization to highlight rule changes.
+- **Limitation**: Time-consuming; easy to miss bulk changes.
+- **Improvement**: Use **AI-assisted review** (Copilot/ChatGPT) and **visual diffs** to highlight edits to rules/regex.  
+  Require side-by-side before/after for key productions (e.g., `<flight_number>`).
 
 #### Configuration Consistency
 
-- **Limitation**: Grammar syntax does not ensure config consistency.
-- **Improvement**: Add validation or checklist to ensure grammar matches
-  configuration ranges (e.g., `NUM_PEOPLE` 1–10, `LENGTH_OF_STAY` 0–20).
+- **Limitation**: Grammar doesn’t enforce runtime limits.
+- **Improvement**: Add a **validation script** to cross-check ranges with config (e.g., `NUM_PEOPLE 1–10`, `LENGTH_OF_STAY 0–20`).  
+  Fail CI if mismatches (e.g., grammar allows 0 but config min is 1).
 
 ## Task 5.1 – ShopFlightFareCommand constructor analysis
 
