@@ -24,8 +24,30 @@ public class SegmentSubcommandTest {
     private static final String DEST   = "SYD";
     private static final String FLIGHT = "QF123";
 
-    private void assertSegmentFields(Object seg) {
-        // TODO: replace Object with SegmentSubcommand and assert getters
+    private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+
+    private SegmentSubcommand buildValid() {
+        return new SegmentSubcommand(
+                ORIGIN,
+                DEST,
+                FLIGHT,
+                TOMORROW,
+                CabinType.EconomyClass,
+                1
+        );
+    }
+    
+    private void assertSegmentFields(SegmentSubcommand seg) {
+        assertEquals(ORIGIN, seg.getOrigin(), "origin mismatch");
+        assertEquals(DEST, seg.getDestination(), "destination mismatch");
+        assertEquals(FLIGHT, seg.getFlightNumber(), "flight number mismatch");
+        assertEquals(TOMORROW, seg.getDepartureDate(), "date mismatch");
+        assertEquals(CabinType.EconomyClass, seg.getCabinType(), "cabin mismatch");
+        assertEquals(1, seg.getNumPeople(), "numPeople mismatch");
+
+        String text = seg.toString();
+        assertTrue(text.contains(ORIGIN) && text.contains(DEST) && text.contains(FLIGHT),
+                "toString() should contain key fields");
     }
 
     /**
