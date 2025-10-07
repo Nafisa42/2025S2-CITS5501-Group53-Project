@@ -348,7 +348,7 @@ The same **Base Choice Coverage** strategy was used. The constructor has multipl
 | Trip type      | Allowed values      | OneWay, Return / anything else                     | SyntacticError |
 | Length of Stay | Conditional rule    | if OneWay, lengthOfStay must be null               | SemanticError  |
 |                |                     | if Return 0–20 / absent or >20                     | SemanticError  |
-| Departure date | Time semantics      | > today and ≤ today+100 / today, <today, >100 days | SemanticError  |
+| Departure date | Time semantics      | > today/ today, <today                             | SemanticError  |
 | Cabin type     | Parsed upstream     | already a `CabinType` enum at this level           | —              |
 
 #### Justification
