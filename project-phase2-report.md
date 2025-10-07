@@ -364,3 +364,43 @@ These characteristics were chosen because they reflect the main business rules g
 | SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=EconomyClass            | SemanticError    |
 
 This minimal ISP set ensures that both syntactic and semantic invalids are exercised for `ShopFlightFareCommand`.
+
+## Task 5.3 – Test implementation
+
+See  `src/SegmentSubcommandTest.java`
+
+## Task 5.4 – Test quality
+
+###Introduction
+
+We evaluated the tests from Task 5.3 by four dimensions: 1.Adequacy (do tests cover the required input space?), 2 Correctness of oracles 3. Determinism and maintainability, and 4.evidence (CI runs, reviews, and checks). The following are specific instructions.
+
+#### 1.Adequacy
+
+Base on ISP of Task 5.2, every test carries an ID in @DisplayName (e.g., `SS-TC3 (spec) …`, `SS-TC3 (impl) …`). 
+We keep a simple matrix that maps each ISP characteristic and partition to at least one active test.
+For example: Date semantics: SS-TC1 (valid tomorrow), SS-TC3 (impl/today). Same airport: SS-TC2 (impl). Passenger range: SS-TC4 (impl). Syntax partitions (IATA/flightNo): SS-TC5/6 (impl).
+We exercised strict boundaries: today and >today, 1/10 and 0/11, and format validity and invalidity for IATA/flight numbers.
+
+#### 2.Correctness of oracles
+
+Split specification and implementation. We kept the tests that met the specification expectations as @Disabled with assertThrows(...) and added proactive `implementations` using assertDoesNotThrow(...). This preserved the specification's intent without breaking CI and clearly documented the differences.
+Assumption Correctly. For flight number syntax we document the assumed regex and separate “Bad format (syntactic)” from “Good with format but unknown (semantic).”
+
+#### 3.Determinism and maintainability
+
+All runnable tests use "tomorrow" (not "today") to avoid time zone instabilities across local midnight/CI time zones. "Today/Today or Before" only appears in disabled specification tests. Tests follow the Arrange-Act-Assert principle and are annotated with @DisplayName for easier review. Each test builds its own scaffold (buildValid()) to avoid hidden cross-test coupling. Assertions are only made on public APIs to minimize brittleness as the implementation evolves.
+
+#### 4. Evidence
+
+See Github pull request and review and issues.
+
+
+
+
+
+
+
+
+
+
