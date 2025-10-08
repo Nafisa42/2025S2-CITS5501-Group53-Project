@@ -218,7 +218,7 @@ Together with PDC, it ensures both breadth (rule coverage) and depth (interactio
   Required only when the trip type is `Return`. LOS must be an integer between 0 and 20 inclusive. If trip type is `OneWay`, LOS must be absent(NULL).
 
 - **Cabin Type**  
-  `cabinType` should be not null and must be one of the six permitted codes: `P`, `F`, `J`, `C`, `S`, or `Y`. These map to the `CabinType` enumeration in the specification and occurs **upstream'** in the command parser and not in the constructor.
+  `cabinType` should be not null and must be one of the six permitted codes: `PremiumFirstClass`, `FirstClass`, `PremiumBusinessClass`, `BusinessClassC`, `PremiumEconomyClass`, or `EconomyClass`. 
 
 - **Departure Date**  
   Must be in `YYYY-MM-DD` format. Semantically, it must represent a valid calendar date that is **not earlier than today** and **no more than 100 days in the future**. Dates before today, or beyond 100 days, will throw `SemanticError`.
@@ -375,25 +375,60 @@ See  `src/SegmentSubcommandTest.java`
 
 We evaluated the tests from Task 5.3 by four dimensions: 1.Adequacy (do tests cover the required input space?), 2 Correctness of oracles 3. Determinism and maintainability, and 4.evidence (CI runs, reviews, and checks). The following are specific instructions.
 
+The test suite meets the goals of Phase 2, covering adequacy, Correctness of oracles, determinism, and maintainability. The linked PRs, commits, and approvals shows that the tests have been reviewed, iterated, integrated, and passed CI.
+
 #### 1.Adequacy
 
-Base on ISP of Task 5.2, every test carries an ID in @DisplayName (e.g., `SS-TC3 (spec) …`, `SS-TC3 (impl) …`). 
-We keep a simple matrix that maps each ISP characteristic and partition to at least one active test.
-For example: Date semantics: SS-TC1 (valid tomorrow), SS-TC3 (impl/today). Same airport: SS-TC2 (impl). Passenger range: SS-TC4 (impl). Syntax partitions (IATA/flightNo): SS-TC5/6 (impl).
-We exercised strict boundaries: today and >today, 1/10 and 0/11, and format validity and invalidity for IATA/flight numbers.
+We mapped the ISP for Task 5.2 from features to partitions to SS-TC* IDs, ensuring that each invalid partition was tested at least once and enforcing boundary conditions (e.g., numPeople = 1 and 10, date = today).
+
+Evidence:
+PR "Finalize SegmentSubcommandTest" #38 shows the class-level Javadoc documenting the partition mapping and the added boundary conditions: https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/pull/38 (see in "File Changes").
+
+Cross references from the report (Task 5.2/5.3 section): https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/blob/master/project-phase2-report.md
 
 #### 2.Correctness of oracles
 
-Split specification and implementation. We kept the tests that met the specification expectations as @Disabled with assertThrows(...) and added proactive `implementations` using assertDoesNotThrow(...). This preserved the specification's intent without breaking CI and clearly documented the differences.
-Assumption Correctly. For flight number syntax we document the assumed regex and separate “Bad format (syntactic)” from “Good with format but unknown (semantic).”
+Since the current JAR constructor does not validate input, we retained the specification expectation as assertThrows(...) (annotated) under a @Disabled test and added an implementation test using assertDoesNotThrow(...) to document the current behavior. This preserves the specification while maintaining a green CI status.
+
+Evidence:
+ Reviewer request and our response; Javadoc + ISP mappings merged in commit 540aefd:
+ https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/540aefd
 
 #### 3.Determinism and maintainability
 
-All runnable tests use "tomorrow" (not "today") to avoid time zone instabilities across local midnight/CI time zones. "Today/Today or Before" only appears in disabled specification tests. Tests follow the Arrange-Act-Assert principle and are annotated with @DisplayName for easier review. Each test builds its own scaffold (buildValid()) to avoid hidden cross-test coupling. Assertions are only made on public APIs to minimize brittleness as the implementation evolves.
+Date instability removed by replacing LocalDate.now().plusDays(1) with a fixed future date; upper/lower bound propagation completed, and the case where today is disabled was preserved.
 
-#### 4. Evidence
+Evidence:
+ confirming dates and boundary coverage:
 
-See Github pull request and review and issues.
+ 96c2c10 — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/96c2c10
+
+ 1c34ffb — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/1c34ffb
+
+ bf3a8ed — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/bf3a8ed
+
+ b4aac57 — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/b4aac57
+
+ Added pass-through control examples (per review) for each disabled scenario (valid IATA and properly formatted flight numbers):
+
+ bd7dac4 — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/bd7dac4
+
+ 9f0aecd — https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/commit/9f0aecd
+
+All tests follow the AAA (Arrange-Act-Assert) principle, have descriptive names, and retain SS-TC IDs for traceability. Source file:
+ https://github.com/Nafisa42/2025S2-CITS5501-Group53-Project/blob/master/src/test/java/SegmentSubcommandTest.java
+
+#### Peer review
+
+Review which led to improvements:
+
+@yanxliu33 requested AAA structures and explicit exception checking (see PR #38 for the conversation).
+
+@Nafisa42 suggested deterministic dates, bounds coverage, and class-level partition mapping; implemented and approved in 540aefd.
+
+@ErqianChen requested a "control group" example for each disabled case; implemented, approved, and merged in bd7dac4 and 9f0aecd.
+
+
 
 
 
