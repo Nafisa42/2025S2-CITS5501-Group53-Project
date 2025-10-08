@@ -19,6 +19,28 @@ import org.junit.jupiter.api.Disabled;
  * @see project-phase2-report.md  // Task 5.2 section
  */
 
+/**
+ * ISP characteristic–partition mapping summary:
+ *
+ * • Date:
+ *   {< today, = today, > today} → SS-TC3
+ *
+ * • People:
+ *   {<1, [1–10], >10} → SS-TC1 (valid), SS-TC4 (invalid)
+ *
+ * • Airports:
+ *   {same, different} → SS-TC2
+ *
+ * • Flight number:
+ *   {valid, invalid format, unknown code} → SS-TC6
+ *
+ * • IATA code:
+ *   {valid, invalid format} → SS-TC5
+ *
+ * • LOS (length of stay):
+ *   {ONE_WAY → null, RETURN → 0–20} — referenced in Task 5.1/5.2 context
+ */
+
 public class SegmentSubcommandTest {
 
     private static final String ORIGIN = "PER";
