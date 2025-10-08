@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 
 /**
  * Phase 2 Task 5.3 — SegmentSubcommandTest
@@ -93,6 +94,30 @@ public class SegmentSubcommandTest {
         assertSegmentFields(seg);
     }
 
+    /**
+     * SS-TC1b: valid upper boundary — numPeople = 10
+     * This complements SS-TC1 (numPeople = 1) on the passing path.
+     */
+    @Test
+    @DisplayName("SS-TC1b: valid segment with numPeople=10 (upper boundary)")
+    public void testValidSegment_NumPeopleUpperBoundary() {
+        // Arrange: same valid inputs, change people to 10
+        int upperBound = 10;
+    
+        // Act: construct a valid segment at the upper boundary
+        SegmentSubcommand seg = new SegmentSubcommand(
+                ORIGIN, DEST, FLIGHT, FUTURE_DATE, CabinType.EconomyClass, upperBound
+        );
+    
+        // Assert: basic field checks; people should be 10
+        assertEquals(ORIGIN, seg.getOrigin());
+        assertEquals(DEST, seg.getDestination());
+        assertEquals(FLIGHT, seg.getFlightNumber());
+        assertEquals(FUTURE_DATE, seg.getDepartureDate());
+        assertEquals(CabinType.EconomyClass, seg.getCabinType());
+        assertEquals(10, seg.getNumPeople());
+    }
+        
     /**
      * Test ID: SS-TC2
      * Semantic invalid — origin equals destination.
