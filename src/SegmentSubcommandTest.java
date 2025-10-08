@@ -19,7 +19,6 @@ import org.junit.jupiter.api.DisplayName;
  *           defined in Task 5.2 (trip/LOS, airports, date, cabin/people).
  * @see project-phase2-report.md  // Task 5.2 section
  *
- *
  * ISP characteristic–partition mapping summary (with boundary coverage):
  *
  * • Date:
