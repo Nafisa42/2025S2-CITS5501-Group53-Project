@@ -106,14 +106,14 @@ public class SegmentSubcommandTest {
     
         // Act: construct a valid segment at the upper boundary
         SegmentSubcommand seg = new SegmentSubcommand(
-                ORIGIN, DEST, FLIGHT, FUTURE_DATE, CabinType.EconomyClass, upperBound
+                ORIGIN, DEST, FLIGHT, TOMORROW, CabinType.EconomyClass, upperBound
         );
     
         // Assert: basic field checks; people should be 10
         assertEquals(ORIGIN, seg.getOrigin());
         assertEquals(DEST, seg.getDestination());
         assertEquals(FLIGHT, seg.getFlightNumber());
-        assertEquals(FUTURE_DATE, seg.getDepartureDate());
+        assertEquals(TOMORROW, seg.getDepartureDate());
         assertEquals(CabinType.EconomyClass, seg.getCabinType());
         assertEquals(10, seg.getNumPeople());
     }
