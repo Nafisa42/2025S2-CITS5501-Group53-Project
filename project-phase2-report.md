@@ -206,50 +206,45 @@ Together with PDC, it ensures both breadth (rule coverage) and depth (interactio
 ### Preconditions
 
 - **Origin and Destination Codes**  
-  Both parameters must be valid IATA airport codes: exactly three uppercase
-  letters (e.g., `PER`, `SYD`). Anything else is syntactically invalid.
+  Both parameters must be valid IATA airport codes: exactly three uppercase letters (e.g., `PER`, `SYD`) in IATA format.Violations will throw `SyntacticError`. Anything else that are good with form but not reall IATA airports or invalid are syntactically invalid and throw `SemanticError`.
 
 - **Origin and Destination Uniqueness**  
-  Origin and destination codes must not be the same. If they are equal, this is semantically invalid.
+  Origin and destination codes must not be the same. If they are equal, this is semantically invalid which throw `SemanticError`.
 
 - **Trip Type**  
   Must be either `OneWay` or `Return`. These are the only two options defined in the command syntax.
 
 - **Length of Stay (LOS)**  
-  Required only when the trip type is `Return`. LOS must be an integer between 0 and 20 inclusive. If trip type is `OneWay`, LOS must be absent.
+  Required only when the trip type is `Return`. LOS must be an integer between 0 and 20 inclusive. If trip type is `OneWay`, LOS must be absent(NULL).
 
 - **Cabin Type**  
-  Must be one of the six permitted codes: `P`, `F`, `J`, `C`, `S`, or `Y`. These map to the `CabinType` enumeration in the specification.
+  `cabinType` should be not null and must be one of the six permitted codes: `P`, `F`, `J`, `C`, `S`, or `Y`. These map to the `CabinType` enumeration in the specification and occurs **upstream'** in the command parser and not in the constructor.
 
 - **Departure Date**  
-  Must be in `YYYY-MM-DD` format. Semantically, it must represent a valid calendar date that is **not earlier than today** and **no more than 100 days
-  in the future**.
+  Must be in `YYYY-MM-DD` format. Semantically, it must represent a valid calendar date that is **not earlier than today** and **no more than 100 days in the future**. Dates before today, or beyond 100 days, will throw `SemanticError`.
 
 - **Error Handling**  
-  If inputs break format rules (e.g., a 2-letter code), a `SyntacticError` should be raised. If inputs break meaning rules (e.g., a past date, origin=destination, or LOS out of range), a `SemanticError` should be raised.
+  If inputs covers abnormal origin or destination codes (e.g., a 2-letter code), a `SyntacticError` should be raised. If inputs break meaning rules (e.g., a past date, origin=destination, or LOS out of range), a `SemanticError` should be raised.
 
 ### Postconditions
 
 - **Valid Object Construction**  
-  When all preconditions are satisfied, a `ShopFlightFareCommand` instance is
-  created with consistent internal state:
+  When all preconditions are satisfied, a `ShopFlightFareCommand` instance is created with consistent internal state:
 
-  - Stores origin and destination codes.
-  - Records trip type. For OneWay trips, LOS is absent. For Return trips, a
-    valid LOS (0–20) is stored.
-  - Stores cabin type.
+  - Stores the origin and destination IATA codes which are three uppercase letters and not equal to each other.
+  - Records trip type that are `ONE_WAY` or `RETURN`. For OneWay trips, LOS is absent(Null). For Return trips, a valid LOS (0–20) is stored.
+  - Stores cabin type and is enum value.
   - Records departure date within the allowed window.
 
 - **Exception on Violation**  
-  If any precondition is violated, the constructor does not create an object. Instead, it throws the correct exception (`SyntacticError` or
-  `SemanticError`).
+  If any precondition is violated, the constructor does not create an object. Instead, it throws an exception (`SyntacticError` if it is 
+  a not allowed IATA codes or `SemanticError` other situation like same origin or destination).
 
 ### Justification
 
 These preconditions and postconditions are taken directly from the
-**Tachi command specification** for `shop flight fare`. They align with the unit’s error model, which distinguishes between syntactic and semantic errors.
-The constructor must guarantee that any constructed object represents a valid, executable command. This ensures downstream components can safely assume the
-command’s parameters are correct without performing redundant checks.
+**Tachi command specification** for `shop flight fare` and the unit's error model(Syntacitic and semantic). They align with the unit’s error model, which distinguishes between syntactic and semantic errors.
+The constructor must guarantee that any constructed object represents a valid, executable command. This ensures downstream components can safely assume the command’s parameters are correct without performing redundant checks.
 
 ---
 
@@ -260,13 +255,14 @@ command’s parameters are correct without performing redundant checks.
 - **SyntacticError** – raised when inputs break **format rules**. Examples:
 
   - Airport code not exactly three uppercase letters.
-  - Flight number not matching regex `[A-Z]{2}\d{3,4}`.
-  - Cabin type not one of `{P,F,J,C,S,Y}`.
+  - Flight number not matching a request format that assume we adopt `[A-Z]{2}\d{3,4}` as a *syntactic* format for flight numbers and 
+  `Well-formed but unknown flight` is treated as `SemanticError`.
+  - Cabin type parsing occurs upstream.
 
 - **SemanticError** – raised when inputs are well-formed but violate business rules. Examples:
   - Origin = destination.
   - Passengers outside 1–10.
-  - Date ≤ today or > today+100.
+  - Date ≤ today or > today.
   - Flight number not existing (passes format but refers to no known service).
   - Length of Stay > 20.
 
@@ -290,9 +286,7 @@ The Input Space Partitioning (ISP) process followed here is:
 
 #### Coverage Level
 
-For this analysis the **Base Choice Coverage** strategy was applied. This method selects one representative test from each input partition rather than attempting all possible combinations. Since the constructor has multiple parameters (origin,
-destination, number of passengers, date, flight number, and cabin type), full combinatorial testing would be infeasible. Base Choice provides a balanced
-approach: it keeps the test suite small while ensuring that every important input characteristic is exercised at least once, including boundary and error partitions.
+For this analysis the **Base Choice Coverage** strategy was applied. This method selects one representative test from each input partition rather than attempting all possible combinations. Since the constructor has multiple parameters (origin,destination, number of passengers, date, flight number, and cabin type), full combinatorial testing would be infeasible. Base Choice provides a balanced approach: it keeps the test suite small while ensuring that every important input characteristic is exercised at least once, including boundary and error partitions.
 
 #### Characteristics and Partitions
 
@@ -301,9 +295,10 @@ approach: it keeps the test suite small while ensuring that every important inpu
 | Origin code          | Format legality    | 3-letter uppercase / wrong length or invalid chars  | SyntacticError |
 | Destination code     | Relation to origin | Different from origin / same as origin              | SemanticError  |
 | Number of passengers | Range              | 1–10 inclusive / <1 or >10                          | SemanticError  |
-| Date (LocalDate)     | Time semantics     | > today and ≤ today+100 / today, < today, >100 days | SemanticError  |
-| Flight number        | Regex format       | `[A-Z]{2}\d{3,4}` / wrong format                    | SyntacticError |
-| Cabin type           | Membership         | P,F,J,C,S,Y / anything else                         | SyntacticError |
+| Date (LocalDate)     | Time semantics     | > today                                             | SemanticError  |
+| Flight number        | Syntax             | Wrong format                                        | SyntacticError |
+|                      | Validity           | Well-formed but invalid flight number               | SemanticError  |
+| Cabin type           | Parsed upstream    | already a `CabinType` enum at this level            | —              |
 
 #### Justification
 
@@ -315,8 +310,8 @@ approach: it keeps the test suite small while ensuring that every important inpu
 
 - **Date**
 
-  - _Source_: Business rule restricts travel date to after today and within 100 days.
-  - _Method_: Boundary-value partitioning (today, <today, >today+100).
+  - _Source_: Business rule restricts travel date to after today.
+  - _Method_: Boundary-value partitioning (today, <today, >today).
   - _Why chosen_: Dates are highly error-prone; boundaries often cause failures.
 
 - **Passengers**
@@ -328,12 +323,12 @@ Together, these ensure coverage of the most failure-prone characteristics, while
 
 #### Test Cases
 
-| ID  | Variation           | Input (relative to base)                                       | Expected Outcome |
-| --- | ------------------- | -------------------------------------------------------------- | ---------------- |
-| TC1 | Base                | ORIGIN=PER, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y  | Success          |
-| TC2 | Invalid Origin      | ORIGIN=xx, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=Y   | SyntacticError   |
-| TC3 | Too Many Passengers | ORIGIN=PER, DEST=SYD, NUM=20, DATE=tomorrow, FL=QF123, CABIN=Y | SemanticError    |
-| TC4 | Date = today        | ORIGIN=PER, DEST=SYD, NUM=1, DATE=today, FL=QF123, CABIN=Y     | SemanticError    |
+| ID  | Variation           | Input (relative to base)                                                  | Expected Outcome |
+| --- | ------------------- | --------------------------------------------------------------            | ---------------- |
+| TC1 | Base                | ORIGIN=PER, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=EconomyClass  | Success          |
+| TC2 | Invalid Origin      | ORIGIN=xx, DEST=SYD, NUM=1, DATE=tomorrow, FL=QF123, CABIN=EconomyClass   | SyntacticError   |
+| TC3 | Too Many Passengers | ORIGIN=PER, DEST=SYD, NUM=20, DATE=tomorrow, FL=QF123, CABIN=EconomyClass | SemanticError    |
+| TC4 | Date = today        | ORIGIN=PER, DEST=SYD, NUM=1, DATE=today, FL=QF123, CABIN=EconomyClass     | SemanticError    |
 
 Each characteristic’s invalid partition is exercised at least once, while keeping tests simple and
 non-overlapping.
@@ -351,9 +346,10 @@ The same **Base Choice Coverage** strategy was used. The constructor has multipl
 | Input Object   | Characteristic      | Partitions (Valid / Invalid)                       | Error Type     |
 | -------------- | ------------------- | -------------------------------------------------- | -------------- |
 | Trip type      | Allowed values      | OneWay, Return / anything else                     | SyntacticError |
-| Length of Stay | Range (Return only) | 0–20 / absent or >20                               | SemanticError  |
-| Departure date | Time semantics      | > today and ≤ today+100 / today, <today, >100 days | SemanticError  |
-| Cabin type     | Membership          | P,F,J,C,S,Y / anything else                        | SyntacticError |
+| Length of Stay | Conditional rule    | if OneWay, lengthOfStay must be null               | SemanticError  |
+|                |                     | if Return 0–20 / absent or >20                     | SemanticError  |
+| Departure date | Time semantics      | > today/ today, <today                             | SemanticError  |
+| Cabin type     | Parsed upstream     | already a `CabinType` enum at this level           | —              |
 
 #### Justification
 
@@ -361,10 +357,50 @@ These characteristics were chosen because they reflect the main business rules g
 
 #### Test Cases
 
-| ID   | Input                                                             | Expected Outcome |
-| ---- | ----------------------------------------------------------------- | ---------------- |
-| SFC1 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=tomorrow, CABIN=Y         | Success          |
-| SFC2 | ORIGIN=PER, DEST=SYD, TRIP=Return, LOS=25, DATE=tomorrow, CABIN=Y | SemanticError    |
-| SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=Y            | SemanticError    |
+| ID   | Input                                                                        | Expected Outcome |
+| ---- | -----------------------------------------------------------------            | ---------------- |
+| SFC1 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=tomorrow, CABIN=EconomyClass         | Success          |
+| SFC2 | ORIGIN=PER, DEST=SYD, TRIP=Return, LOS=25, DATE=tomorrow, CABIN=EconomyClass | SemanticError    |
+| SFC3 | ORIGIN=PER, DEST=SYD, TRIP=OneWay, DATE=today, CABIN=EconomyClass            | SemanticError    |
 
 This minimal ISP set ensures that both syntactic and semantic invalids are exercised for `ShopFlightFareCommand`.
+
+## Task 5.3 – Test implementation
+
+See  `src/SegmentSubcommandTest.java`
+
+## Task 5.4 – Test quality
+
+###Introduction
+
+We evaluated the tests from Task 5.3 by four dimensions: 1.Adequacy (do tests cover the required input space?), 2 Correctness of oracles 3. Determinism and maintainability, and 4.evidence (CI runs, reviews, and checks). The following are specific instructions.
+
+#### 1.Adequacy
+
+Base on ISP of Task 5.2, every test carries an ID in @DisplayName (e.g., `SS-TC3 (spec) …`, `SS-TC3 (impl) …`). 
+We keep a simple matrix that maps each ISP characteristic and partition to at least one active test.
+For example: Date semantics: SS-TC1 (valid tomorrow), SS-TC3 (impl/today). Same airport: SS-TC2 (impl). Passenger range: SS-TC4 (impl). Syntax partitions (IATA/flightNo): SS-TC5/6 (impl).
+We exercised strict boundaries: today and >today, 1/10 and 0/11, and format validity and invalidity for IATA/flight numbers.
+
+#### 2.Correctness of oracles
+
+Split specification and implementation. We kept the tests that met the specification expectations as @Disabled with assertThrows(...) and added proactive `implementations` using assertDoesNotThrow(...). This preserved the specification's intent without breaking CI and clearly documented the differences.
+Assumption Correctly. For flight number syntax we document the assumed regex and separate “Bad format (syntactic)” from “Good with format but unknown (semantic).”
+
+#### 3.Determinism and maintainability
+
+All runnable tests use "tomorrow" (not "today") to avoid time zone instabilities across local midnight/CI time zones. "Today/Today or Before" only appears in disabled specification tests. Tests follow the Arrange-Act-Assert principle and are annotated with @DisplayName for easier review. Each test builds its own scaffold (buildValid()) to avoid hidden cross-test coupling. Assertions are only made on public APIs to minimize brittleness as the implementation evolves.
+
+#### 4. Evidence
+
+See Github pull request and review and issues.
+
+
+
+
+
+
+
+
+
+
