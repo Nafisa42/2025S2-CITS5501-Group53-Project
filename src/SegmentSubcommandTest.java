@@ -18,9 +18,8 @@ import org.junit.jupiter.api.DisplayName;
  * @implNote These tests correspond directly to the characteristics and partitions
  *           defined in Task 5.2 (trip/LOS, airports, date, cabin/people).
  * @see project-phase2-report.md  // Task 5.2 section
- */
-
-/**
+ *
+ *
  * ISP characteristic–partition mapping summary (with boundary coverage):
  *
  * • Date:
