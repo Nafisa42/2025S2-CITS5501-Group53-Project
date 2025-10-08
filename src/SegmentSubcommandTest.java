@@ -25,7 +25,12 @@ public class SegmentSubcommandTest {
     private static final String DEST   = "SYD";
     private static final String FLIGHT = "QF123";
 
-    private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+    /**
+     * Fixed future date to ensure deterministic test behavior across
+     * environments and time zones (avoids CI flakiness).
+     */
+    private static final LocalDate TOMORROW = LocalDate.of(2099, 1, 1);
+
 
     private SegmentSubcommand buildValid() {
         return new SegmentSubcommand(
