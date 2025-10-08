@@ -243,6 +243,28 @@ public class SegmentSubcommandTest {
     }
 
     /**
+     * Control for SS-TC5 (IATA format): valid IATA codes should pass.
+     * Uses different airports to avoid overlap with SS-TC1 baseline.
+     */
+    @Test
+    @DisplayName("Control for SS-TC5: valid IATA format (MEL → SYD)")
+    public void testControl_IataFormat_Valid() {
+        // Arrange: well-formed IATA codes
+        String origin = "MEL";
+        String dest   = "SYD";
+    
+        // Act
+        SegmentSubcommand seg = new SegmentSubcommand(
+                origin, dest, FLIGHT, TOMORROW, CabinType.EconomyClass, 1
+        );
+    
+        // Assert
+        assertEquals(origin, seg.getOrigin());
+        assertEquals(dest, seg.getDestination());
+        assertEquals(TOMORROW, seg.getDepartureDate());
+    }
+
+    /**
      * Test ID: SS-TC6
      * Syntactic invalid — bad flight number format.
      * Expected (per Task 5.2): SyntacticError at construction.
