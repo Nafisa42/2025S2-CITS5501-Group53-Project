@@ -21,13 +21,13 @@ import org.junit.jupiter.api.DisplayName;
  */
 
 /**
- * ISP characteristic–partition mapping summary:
+ * ISP characteristic–partition mapping summary (with boundary coverage):
  *
  * • Date:
- *   {< today, = today, > today} → SS-TC3
+ *   {< today, = today, > today} → SS-TC3 (=today), Boundary (<today) added as disabled test
  *
  * • People:
- *   {<1, [1–10], >10} → SS-TC1 (valid), SS-TC4 (invalid)
+ *   {<1, [1–10], >10} → SS-TC1 (1, valid), SS-TC1b (10, upper boundary valid), SS-TC4 (invalid)
  *
  * • Airports:
  *   {same, different} → SS-TC2
