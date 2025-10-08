@@ -288,4 +288,25 @@ public class SegmentSubcommandTest {
         //         ORIGIN, DEST, invalidFlight, TOMORROW, CabinType.EconomyClass, 1
         // ));
     }
+
+    /**
+     * Control for SS-TC6 (flight number format): well-formed flight number should pass.
+     * Uses an alternative airline prefix to make the control explicit.
+     */
+    @Test
+    @DisplayName("Control for SS-TC6: well-formed flight number (e.g., VA678)")
+    public void testControl_FlightNumber_WellFormed() {
+        // Arrange: well-formed flight number
+        String goodFlight = "VA678";
+    
+        // Act
+        SegmentSubcommand seg = new SegmentSubcommand(
+                ORIGIN, DEST, goodFlight, TOMORROW, CabinType.EconomyClass, 1
+        );
+    
+        // Assert
+        assertEquals(goodFlight, seg.getFlightNumber());
+        assertEquals(ORIGIN, seg.getOrigin());
+        assertEquals(DEST, seg.getDestination());
+    }
 }
