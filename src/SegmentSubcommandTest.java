@@ -170,6 +170,30 @@ public class SegmentSubcommandTest {
     }
 
     /**
+     * Boundary completion for date: {< today, = today, > today}
+     * This test covers the "< today" case to complement SS-TC3 (= today).
+     * Kept @Disabled because constructor currently does not validate dates.
+     */
+    // TODO: link tracking issue if available, e.g. #45
+    @Disabled("Constructor does not validate date semantics; enable when rules are enforced")
+    @Test
+    @DisplayName("Boundary (disabled): departure date before today (< today)")
+    public void testSemantic_DateBeforeToday_shell() {
+        // Arrange: yesterday
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+    
+        // Act + Assert (placeholder): current constructor should not throw
+        assertDoesNotThrow(() -> new SegmentSubcommand(
+                ORIGIN, DEST, FLIGHT, yesterday, CabinType.EconomyClass, 1
+        ));
+    
+        // When semantics are enforced at construction time, replace with:
+        // assertThrows(SemanticError.class, () -> new SegmentSubcommand(
+        //         ORIGIN, DEST, FLIGHT, yesterday, CabinType.EconomyClass, 1
+        // ));
+    }
+
+    /**
      * Test ID: SS-TC4
      * Semantic invalid — number of people out of allowed range (valid: 1–10).
      * Expected (per Task 5.2): SemanticError at construction.
