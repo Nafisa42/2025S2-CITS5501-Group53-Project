@@ -112,10 +112,12 @@ mvn test
 ./gradlew test
 
 # Basic
-## Windows Powershell:
+## Windows PowerShell:
 cd 'Folder path'
 javac -cp ".;lib\junit-platform-console-standalone-1.10.0.jar" \
-  src\DateTimeChecker.java src\DateTimeCheckerTest.java
+  src\DateTimeChecker.java \
+  src\DateTimeCheckerTest.java \
+  src\SegmentSubcommandTest.java
 
 java -jar lib\junit-platform-console-standalone-1.10.0.jar \
   -cp src --scan-class-path
@@ -123,11 +125,18 @@ java -jar lib\junit-platform-console-standalone-1.10.0.jar \
 
 ## Mac / Linux / WSL (Ubuntu) Terminal:
 javac -cp .:lib/junit-platform-console-standalone-1.10.0.jar \
-  src/DateTimeChecker.java src/DateTimeCheckerTest.java
+  src/DateTimeChecker.java \
+  src/DateTimeCheckerTest.java \
+  src/SegmentSubcommandTest.java
 
-java -jar lib/junit-platform-console-standalone-1.10.0.jar \
+java -jar lib\junit-platform-console-standalone-1.10.0.jar \
   -cp src --scan-class-path
 ```
+
+> **Note:**  
+> In **Phase 2**, all JUnit 5 tests (e.g., `SegmentSubcommandTest`) follow the  
+> **AAA (Arrange–Act–Assert)** pattern and are derived from **Input Space Partitioning (ISP)**.  
+> Some test cases use fixed **future dates** to ensure deterministic CI results.
 
 ---
 
