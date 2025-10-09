@@ -146,10 +146,10 @@ java -jar lib\junit-platform-console-standalone-1.10.0.jar \
 
 ## Support
 
-If you have questions or need help, please:
+If you have any questions or need assistance, please:
 
-- Open an **Issue** in this repository
-- see **Group member** section for emails
+- Open an **Issue** in this repository, or  
+- Refer to the **Group Members** section below for contact details.
 
 ---
 
