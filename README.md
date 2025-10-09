@@ -102,6 +102,7 @@ Implemented with **JUnit 5** in `src/DateTimeCheckerTest.java`
 - Adds **ISP-based JUnit 5 tests** for full Tachi command validation.  
 - Follows the **AAA** testing pattern and uses `assertThrows` for error handling.  
 - Some tests use fixed **future dates** to ensure deterministic CI results.
+
 ---
 
 ## Running the Tests
@@ -161,7 +162,7 @@ If you have any questions or need assistance, please:
 
 - **Erqian Chen (23421379@uwa.edu.au)** – Developer  
   - Phase 1: Wrote JUnit test cases and ensured test coverage.  
-  - Phase 2: Refined the implementation of Tasks 5.1 and 5.2, co-reviewed Task 4 and collaborated on **Task 5.4**
+  - Phase 2: Refined the implementation of Tasks 5.1 and 5.2, and co-reviewed Task 4 and collaborated on **Task 5.4**.
 
 - **Keming Cao (24458695@uwa.edu.au)** – Developer  
   - Phase 1: Reviewed code contributions and provided feedback.  
