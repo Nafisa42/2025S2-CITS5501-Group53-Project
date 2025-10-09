@@ -79,11 +79,12 @@ This project forms part of the **Tachi Flight Reservation System** testing frame
 
 ## Development Environment
 
-- **Java 17+**
-- **JUnit 5** as the testing framework
-- Recommended IDE: VS Code / IntelliJ IDEA
-- Build tools: Maven or Gradle (optional)
-- Documentation and diagrams are stored in the `docs/img/` folder
+- **Java 17 (LTS)** – compatible with all project phases; Java 21 also supported  
+- **JUnit 5** as the testing framework (Jupiter API 5.9 or above)  
+- Recommended IDE: VS Code / IntelliJ IDEA  
+- Build tools: Maven or Gradle (optional)  
+- **BNF Playground** used in Phase 2 for grammar validation  
+- Documentation and diagrams are stored in `docs/img/`
 
 ---
 
