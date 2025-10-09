@@ -98,6 +98,10 @@ Implemented with **JUnit 5** in `src/DateTimeCheckerTest.java`
   - Boundary cases (e.g., leap years, `00:00`, `23:59`)
 - Tests run automatically via **GitHub Actions** and provided **starter_tests**
 
+### Phase 2 Additions
+- Adds **ISP-based JUnit 5 tests** for full Tachi command validation.  
+- Follows the **AAA** testing pattern and uses `assertThrows` for error handling.  
+- Some tests use fixed **future dates** to ensure deterministic CI results.
 ---
 
 ## Running the Tests
