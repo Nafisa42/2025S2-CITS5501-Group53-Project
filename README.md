@@ -59,17 +59,20 @@ This project forms part of the **Tachi Flight Reservation System** testing frame
 2025S2-CITS5501-Group53-Project/
 ├── .github/workflows/              # GitHub Actions
 │   └── starter-checks.yml
-├── docs/img                        # Documentation and Flowcharts
+├── docs/img/                       # Documentation and Flowcharts
 │   ├── isValidDate.drawio.png
 │   └── isValidDateTime.drawio.png
 ├── src/                            # Java source code and unit tests
-│   ├── DateTimeChecker.java        # Date/time verification tools
-│   └── DateTimeCheckerTest.java    # JUnit tests
-├── starter_tests/                  # Provided Python tests
+│   ├── DateTimeChecker.java        # Phase 1: date/time verification tools
+│   ├── DateTimeCheckerTest.java    # Phase 1: JUnit tests
+│   └── SegmentSubcommandTest.java  # Phase 2: ISP-based JUnit tests
+├── starter_tests/                  # Provided Python starter tests
 │   └── test_repository.py
+├── tachi_grammer.txt               # Phase 2: EBNF grammar definition
+├── project-phase1-report.md        # Phase 1 report (Markdown)
+├── project-phase2-report.md        # Phase 2 report (Markdown)
 ├── .gitignore                      # Git ignore rules
-├── README.md                       # Project description
-└── project-phase1-report.md        # Stage 1 report (Markdown format)
+└── README.md                       # Project description
 ```
 
 ---
