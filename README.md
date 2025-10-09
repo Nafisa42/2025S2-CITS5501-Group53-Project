@@ -153,23 +153,25 @@ If you have any questions or need assistance, please:
 
 ---
 
-## Group member
+## Group Members
 
-- **Nafisa Tabassum (24627403@uwa.edu.au)** – Developer
+- **Nafisa Tabassum (24627403@uwa.edu.au)** – Developer  
+  - Phase 1: Implemented core features and functions.  
+  - Phase 2: Developed the base framework for Task 5 (especially 5.1 and 5.2) and participated in reviewing Task 4.
 
-  - Implemented features and core functions
+- **Erqian Chen (23421379@uwa.edu.au)** – Developer  
+  - Phase 1: Wrote JUnit test cases and ensured test coverage.  
+  - Phase 2: Refined the implementation of Tasks 5.1 and 5.2, co-reviewed Task 4 and collaborated on **Task 5.4**
 
-- **Erqian Chen (23421379@uwa.edu.au)** – Developer
+- **Keming Cao (24458695@uwa.edu.au)** – Developer  
+  - Phase 1: Reviewed code contributions and provided feedback.  
+  - Phase 2: Implemented **Task 5.3** (`SegmentSubcommandTest.java`) and collaborated on **Task 5.4** (test quality review).  
+    Also updated and maintained the **README** and documentation structure.
 
-  - Wrote JUnit test cases and ensured test coverage
+- **Ahmed Shadab (23912137@uwa.edu.au)** – Reviewer  
+  - Phase 1: Reviewed code contributions and ensured code quality.  
+  - Phase 2: Handled **Task 4** (grammar and grammar quality) and participated in the review of Task 5.
 
-- **Keming Cao (24458695@uwa.edu.au)** – Reviewer
-
-  - Reviewed code contributions and provided feedback
-
-- **Ahmed Shadab (23912137@uwa.edu.au)** – Reviewer
-
-  - Reviewed code contributions and ensured code quality
-
-- **Yanxi Liu (24305445@uwa.edu.au)** – Reporter
-  - Prepared project documentation and reports
+- **Yanxi Liu (24305445@uwa.edu.au)** – Reporter  
+  - Phase 1: Prepared project documentation and reports.  
+  - Phase 2: Led **Task 4 documentation** (grammar and grammar quality) and assisted in final report editing.
