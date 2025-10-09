@@ -2,9 +2,22 @@
 
 ## Project Description
 
-This project is a beginner's version of the **DateTimeChecker** program.  
-The goal is to ensure the **syntactical** and **semantic** validation of dates  
-and datetimes used in the **Tachi flight reservation system**.
+This project forms part of the **Tachi Flight Reservation System** testing framework.
+
+- **Phase 1 (Foundation):**  
+  Focused on developing the **DateTimeChecker** program — a basic utility to verify
+  the **syntactic** and **semantic** validity of dates and datetimes used in Tachi commands.  
+  It established the initial quality-assurance workflow, including JUnit testing,
+  GitHub Actions CI, and documentation standards.  
+
+- **Phase 2 (Expansion):**  
+  Builds upon Phase 1 by extending validation from individual date/time inputs
+  to complete **Tachi command grammars**.  
+  It introduces an **EBNF grammar definition**, detailed **constructor analysis**,
+  **Input Space Partitioning (ISP)**–based test design, and a comprehensive **JUnit 5 test suite**
+  for higher-level components such as `SegmentSubcommand` and `ShopFlightFareCommand`.  
+  Together, these stages create a structured and traceable testing process for both
+  low-level data validation and high-level command behavior.
 
 ---
 
