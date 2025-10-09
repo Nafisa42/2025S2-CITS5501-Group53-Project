@@ -23,6 +23,8 @@ This project forms part of the **Tachi Flight Reservation System** testing frame
 
 ## Main Functionality
 
+### Phase 1 – Date/Time Validation
+
 | Item                  | Grammar                                  |
 | --------------------- | ---------------------------------------- |
 | **Date (YYYY-MM-DD)** | digits only (`0`–`9`, excluding hyphens) |
@@ -30,6 +32,24 @@ This project forms part of the **Tachi Flight Reservation System** testing frame
 |                       | must be ≥ today                          |
 | **Time (THH:MM)**     | digits only (`0`–`9`, excluding colons)  |
 | Semantics             | valid 24-hour clock                      |
+
+### Phase 2 – Command Grammar and Testing
+
+| Component            | Description |
+| -------------------- | ------------ |
+| **EBNF Grammar**     | Defines the syntax of Tachi CLI commands, such as `shop flight fare` and `air book request`.  
+|                      | Implemented in `Group53_tachi_grammer.txt`. |
+| **Validation Scope** | Extends testing from individual date/time inputs  
+|                      | to complete commands that include parameters such as  
+|                      | airport codes, flight numbers, cabin classes, passenger counts, and dates. |
+| **Testing Approach** | Applies **Input Space Partitioning (ISP)** and the  
+|                      | **AAA (Arrange–Act–Assert)** structure in JUnit 5  
+|                      | to ensure systematic and readable test design. |
+| **Error Handling**   | Uses `assertThrows` and `assertDoesNotThrow`  
+|                      | to verify both **syntactic** and **semantic** correctness  
+|                      | under valid and invalid input conditions. |
+| **Goal**             | Ensures deterministic and maintainable command-level validation,  
+|                      | aligned with the grammar specification and QA criteria. |
 
 ---
 
